@@ -17,12 +17,12 @@
               default-active="2"
               text-color="#fff"
           >
-            <el-sub-menu index="1" @click="demo">
+            <el-sub-menu index="1" >
               <template #title>
                 <el-icon>
                   <location/>
                 </el-icon>
-                <span>商品列表</span>
+                <span @click="demo">商品列表</span>
               </template>
             </el-sub-menu>
           </el-menu>
@@ -43,8 +43,6 @@ const router = useRouter();
 const demo = () => {
   router.push('demo');
 }
-// const list = router.getRoutes().filter(value => value.meta.isShow);
-// console.log(list);
 </script>
 
 <style scoped>
