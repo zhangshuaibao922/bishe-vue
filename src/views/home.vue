@@ -2,10 +2,13 @@
   <div class="common-layout">
     <el-container class="common-layout">
       <el-header>
-        <el-row style="background: blue;width: 100%;height: 100%">
-          <el-col :span="4"><img src="../assets/logo.png" class="logo"/></el-col>
-          <el-col :span="16"><h2>后台管理系统</h2></el-col>
-          <el-col :span="4"><span class="quit-login">退出登录</span></el-col>
+        <el-row style="background: deepskyblue;width: 100%;height: 60px">
+          <el-col :span="4"><img src="../assets/school.png" class="logo" style="max-width: 100%; max-height: 50px;margin-top: 5px"/></el-col>
+          <el-col :span="16"><h2 style="margin-top: 10px">后台管理系统</h2></el-col>
+          <el-col :span="4">
+            <img src="../assets/avatar.png" class="logo" style="max-width: 100%; max-height: 50px;margin-top: 5px"/>
+            <span class="quit-login">退出登录</span>
+          </el-col>
         </el-row>
       </el-header>
       <el-container>
@@ -17,7 +20,7 @@
               default-active="2"
               text-color="#fff"
           >
-            <el-sub-menu index="1" >
+            <el-sub-menu index="1">
               <template #title>
                 <el-icon>
                   <location/>
