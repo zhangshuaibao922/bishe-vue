@@ -1,50 +1,59 @@
 <template>
   <el-container class="layout-container-demo" style="height: 100%">
-
     <el-menu
         default-active="2"
         class="el-menu-vertical-demo"
         :collapse="isCollapse"
         @open="handleOpen"
         @close="handleClose"
-        style="border-right-style: solid;border-width: 1px;border-color: #d9d9d9;"
+        style="overflow-y: auto;max-height: 100%;border-right-style: solid;border-width: 1px;border-color: #d9d9d9;"
     >
       <div style="height: 60px;background: white;border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;display: flex">
-        <img src="../assets/school.png" style="height: 50px;width: 60px;margin-top: 5px">
+        <img src="../assets/school.png" style="height: 50px;width: 70px;margin-top: 5px">
         <div v-if="!isCollapse" style="font-size:x-large;margin-left: 15px;margin-top: 10px;font-weight: bold">在线批阅系统</div>
       </div>
       <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="1">
         <template #title>
-          <el-icon><location /></el-icon>
-          <span style="font-size: 18px">学院管理</span>
+          <el-icon size="30px"><Notification /></el-icon>
+          <span style="font-size: 18px;margin-left: 10px">信息管理</span>
         </template>
-        <el-menu-item-group>
-          <template #title><span>Group One</span></template>
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
-        </el-sub-menu>
+        <el-menu-item index="1-1">学院管理</el-menu-item>
+        <el-menu-item index="1-2">班级管理</el-menu-item>
+        <el-menu-item index="1-3">教师管理</el-menu-item>
       </el-sub-menu>
-      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2">
-        <el-icon><icon-menu /></el-icon>
-        <template #title>Navigator Two</template>
+      <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2">
+        <template #title>
+          <el-icon size="30px"><Notification /></el-icon>
+          <span style="font-size: 18px;margin-left: 10px">考试安排</span>
+        </template>
+        <el-menu-item index="2-1">随堂测试</el-menu-item>
+        <el-menu-item index="2-2">考试</el-menu-item>
+      </el-sub-menu>
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
+        <el-icon size="30px"><icon-menu /></el-icon>
+        <template #title><span style="font-size: 18px;margin-left: 10px">答题卡录入</span></template>
       </el-menu-item>
-      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3" disabled>
-        <el-icon><document /></el-icon>
-        <template #title>Navigator Three</template>
+      <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4">
+        <template #title>
+          <el-icon size="30px"><Notification /></el-icon>
+          <span style="font-size: 18px;margin-left: 10px">批阅</span>
+        </template>
+        <el-menu-item index="4-1">正常批阅</el-menu-item>
+        <el-menu-item index="4-2">异常重阅</el-menu-item>
+      </el-sub-menu>
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
+        <el-icon size="30px"><document /></el-icon>
+        <template #title><span style="font-size: 18px;margin-left: 10px">成绩统计</span></template>
       </el-menu-item>
-      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="demo">
-        <el-icon><setting /></el-icon>
-        <template #title>Navigator Four</template>
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
+        <el-icon  size="30px"><setting /></el-icon>
+        <template #title><span style="font-size: 18px;margin-left: 10px">权限分配</span></template>
+      </el-menu-item>
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7" @click="demo">
+        <el-icon size="30px"><User /></el-icon>
+        <template #title><span style="font-size: 18px;margin-left: 10px">个人信息</span></template>
       </el-menu-item>
     </el-menu>
-
     <el-container>
       <el-header style="align-items:center;position:relative;display: flex;font-size: 12px;background: white;border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;">
         <div style="height: 30px;width: 30px;" @click="changeIsCollapse">
@@ -67,8 +76,7 @@ import { ref } from 'vue';
 import {
   Document,
   Menu as IconMenu,
-  Location,
-  Setting,
+  Setting, Notification, User,
 } from '@element-plus/icons-vue'
 import {useRouter} from "vue-router";
 const username=ref(localStorage.getItem("name"));
