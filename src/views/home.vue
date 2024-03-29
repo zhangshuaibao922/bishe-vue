@@ -11,12 +11,12 @@
     >
       <div style="height: 60px;background: white;border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;display: flex">
         <img src="../assets/school.png" style="height: 50px;width: 60px;margin-top: 5px">
-        <div v-if="!isCollapse" style="font-size:x-large;margin-left: 15px;margin-top: 10px">在线批阅系统</div>
+        <div v-if="!isCollapse" style="font-size:x-large;margin-left: 15px;margin-top: 10px;font-weight: bold">在线批阅系统</div>
       </div>
-      <el-sub-menu index="1">
+      <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="1">
         <template #title>
           <el-icon><location /></el-icon>
-          <span>Navigator One</span>
+          <span style="font-size: 18px">学院管理</span>
         </template>
         <el-menu-item-group>
           <template #title><span>Group One</span></template>
@@ -31,15 +31,15 @@
           <el-menu-item index="1-4-1">item one</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
-      <el-menu-item index="2">
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2">
         <el-icon><icon-menu /></el-icon>
         <template #title>Navigator Two</template>
       </el-menu-item>
-      <el-menu-item index="3" disabled>
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3" disabled>
         <el-icon><document /></el-icon>
         <template #title>Navigator Three</template>
       </el-menu-item>
-      <el-menu-item index="4" @click="demo">
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="demo">
         <el-icon><setting /></el-icon>
         <template #title>Navigator Four</template>
       </el-menu-item>
