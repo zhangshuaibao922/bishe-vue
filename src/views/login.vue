@@ -31,10 +31,9 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)"
-        >登录
-        </el-button
-        >
+        <el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)">
+          登录
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -52,6 +51,7 @@ interface loginData {
   username: string,
   password: string
 }
+
 interface User {
   name: string,
   username: string,
@@ -96,15 +96,15 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     // 处理登录成功的情况
     if (valid) {
       login(ruleForm).then((res) => {
-        const user:User=res.data.data;
+        const user: User = res.data.data;
         console.log(user);
-        if(Object.keys(user).length==0){
+        if (Object.keys(user).length == 0) {
           ElMessage.error("登陆失败，请检查账号密码")
-        }else {
+        } else {
           ElMessage.success("登录成功")
-          localStorage.setItem('name',user.name)
+          localStorage.setItem('name', user.name)
           console.log(localStorage.getItem('name'))
-          localStorage.setItem('authorityRole',user.authorityRole)
+          localStorage.setItem('authorityRole', user.authorityRole)
           router.push('/welcome');
         }
       }).catch((error: any) => {
