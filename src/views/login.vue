@@ -8,7 +8,7 @@
         label-width="80px"
         class="demo-ruleForm"
     >
-      <h2>后台管理系统</h2>
+      <h2>在线批阅系统</h2>
       <el-form-item label="身份：" prop="identity">
         <el-select v-model="ruleForm.identity" placeholder="选择身份" style="width: 200px">
           <el-option
