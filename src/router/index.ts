@@ -16,8 +16,13 @@ const router = createRouter({
       children:[{
         path:'/welcome',
         name:'welcome',
-        component:()=>import('../views/welcome.vue')
-      }]
+        component:()=>import('../views/pages/welcome.vue')
+      },{
+        path:'/answer',
+        name:'answer',
+        component:()=>import('../views/pages/answer.vue')
+      }
+      ]
     },
   ]
 })

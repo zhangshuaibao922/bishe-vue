@@ -1,13 +1,11 @@
 <template>
 <div style="height: 100%;width:100%;background: #f5f5f5">
-  <div style="margin: 5px;background: white">demo</div>
+  欢迎来到批阅系统
 </div>
 </template>
 
-<script>
-export default {
-  name: "demo"
-}
+<script setup lang="ts">
+
 </script>
 
 <style scoped>

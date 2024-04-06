@@ -29,9 +29,9 @@
         <el-menu-item index="2-1">测试</el-menu-item>
         <el-menu-item index="2-2">考试</el-menu-item>
       </el-sub-menu>
-      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
+      <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3" @click="toAnswer">
         <el-icon size="30px"><icon-menu /></el-icon>
-        <template #title><span style="font-size: 18px;margin-left: 10px">答题卡录入</span></template>
+        <template #title><span style="font-size: 18px;margin-left: 10px" >答题卡录入</span></template>
       </el-menu-item>
       <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4">
         <template #title>
@@ -94,6 +94,10 @@ const handleClose = (key: string, keyPath: string[]) => {
 const router = useRouter();
 const demo = () => {
   router.push('welcome');
+}
+
+const toAnswer=()=>{
+  router.push('answer');
 }
 </script>
 
