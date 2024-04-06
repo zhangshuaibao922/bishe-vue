@@ -26,7 +26,7 @@
           <el-icon size="30px"><Notification /></el-icon>
           <span style="font-size: 18px;margin-left: 10px">考试安排</span>
         </template>
-        <el-menu-item index="2-1">随堂测试</el-menu-item>
+        <el-menu-item index="2-1">测试</el-menu-item>
         <el-menu-item index="2-2">考试</el-menu-item>
       </el-sub-menu>
       <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
@@ -51,7 +51,7 @@
       </el-menu-item>
       <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7" @click="demo">
         <el-icon size="30px"><User /></el-icon>
-        <template #title><span style="font-size: 18px;margin-left: 10px">个人信息</span></template>
+        <template #title><span style="font-size: 18px;margin-left: 10px">用户信息</span></template>
       </el-menu-item>
     </el-menu>
     <el-container>
