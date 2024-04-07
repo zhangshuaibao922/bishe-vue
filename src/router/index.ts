@@ -21,7 +21,17 @@ const router = createRouter({
         path:'/answer',
         name:'answer',
         component:()=>import('../views/pages/answer.vue')
-      }
+      },
+        {
+          path:'/school',
+          name:'school',
+          component:()=>import('../views/pages/school.vue')
+        },
+        {
+          path:'/class',
+          name:'class',
+          component:()=>import('../views/pages/class.vue')
+        }
       ]
     },
   ]
