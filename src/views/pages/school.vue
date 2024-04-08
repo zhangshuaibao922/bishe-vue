@@ -131,7 +131,6 @@ const deletebyId = async (id: number) => {
   console.log(res.data);
   if (res.data) {
     ElMessage.success("删除成功");
-
     await fetchData();
   } else {
     ElMessage.error("删除失败");
