@@ -20,8 +20,8 @@
               <span style="font-size: 18px;margin-left: 10px">信息管理</span>
             </template>
             <el-menu-item index="1-1" @click="toSchool">学院管理</el-menu-item>
-            <el-menu-item index="1-2" @click="toClass">学生管理</el-menu-item>
-            <el-menu-item index="1-3">教师管理</el-menu-item>
+            <el-menu-item index="1-2" @click="toClass">课程管理</el-menu-item>
+            <el-menu-item index="1-3" @click="toTeacher">教师管理</el-menu-item>
           </el-sub-menu>
           <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2">
             <template #title>
@@ -103,8 +103,12 @@ const toSchool=()=>{
   router.push('school');
 }
 const toClass=()=>{
-  mark.value="学生管理";
+  mark.value="课程管理";
   router.push('class');
+}
+const toTeacher=()=>{
+  mark.value="教师管理";
+  router.push('teacher');
 }
 </script>
 

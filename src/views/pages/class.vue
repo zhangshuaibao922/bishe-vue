@@ -1,15 +1,15 @@
 <template>
   <div style="width: 100%;height: 100%;">
-    <div style="width: 100%;height: 10%;background: snow">
-      <el-input v-model="input" style="width: 500px;margin-top: 15px;margin-left: 20%"
-                placeholder="请输入课号" size="large"/>
-      <el-button type="primary" @click="selectStudent" size="large" style="margin-top: 15px">查询学生
+    <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
+      <el-input v-model="input" style="width: 500px;margin-left: 20%"
+                placeholder="请输入课程名称" size="large"/>
+      <el-button type="primary" @click="selectLesson" size="large" style="">查询课程
       </el-button>
 
-      <el-button type="success" round @click="addLesson" size="large" style="margin-top: 15px;margin-left: 100px">新增课程
+      <el-button type="success" round @click="addLesson" size="large" style="margin-left: 100px">新增课程
       </el-button>
-    </div>
-    <div style="margin-left: 100px;margin-right: 100px;height: 90%;background: white">
+    </el-card>
+    <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column label="课程号" width="400">
           <template #default="scope">
@@ -19,7 +19,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="课程名称" width="400">
+        <el-table-column label="课程名称" width="300">
           <template #default="scope">
             <el-popover effect="light" trigger="hover" placement="top" width="auto">
               <template #default>
@@ -34,15 +34,18 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button size="small" @click="updateLesson(scope.row)"
-            >修改</el-button
-            >
+            <el-button size="small" @click="selectStudent(scope.row.lessonId)">
+              查看学生
+            </el-button>
+            <el-button size="small" @click="updateLesson(scope.row)">
+              修改
+            </el-button>
             <el-button
                 size="small"
                 type="danger"
-                @click="deleteLesson(scope.row.id)"
-            >删除</el-button
-            >
+                @click="deleteLesson(scope.row.id)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -110,7 +113,7 @@
         </template>
       </el-dialog>
 
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -119,6 +122,7 @@ import {ref, onMounted} from 'vue';
 import { Collection } from '@element-plus/icons-vue'
 import {queryAll, update,addByInfo,deleteById,queryById} from "@/request/class/class";
 import {ElMessage} from "element-plus";
+import router from "@/router";
 
 interface Lesson {
   id: string
@@ -150,16 +154,24 @@ const centerDialogVisible = ref(false)
 const centerDialogVisible1 = ref(false)
 const input = ref<string>('')
 
-const selectStudent=async ()=>{
+const selectStudent=(lessonId:string)=>{
+  localStorage.setItem('lessonId', lessonId)
+  router.push("student")
+}
+
+const selectLesson=async ()=>{
   if(input.value==null||input.value.length==0){
-    ElMessage.error("请输入课程号")
+    await fetchData();
   }else {
     const res=await queryById(input.value);
-    if(res.data.id==-1) {
+    if(res.data.length==0) {
       ElMessage.error("课程不存在")
     }else {
+      ElMessage.success("查询成功");
+      tableData.value = res.data
       console.log(res.data)
     }
+    input.value='';
   }
 }
 
