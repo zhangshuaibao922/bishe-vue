@@ -1,16 +1,16 @@
 <template>
   <div style="width: 100%;height: 100%;">
-    <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
-      <el-input v-model="input" style="width: 400px;margin-left: 20%"
-                placeholder="请输入课程名称" size="large"/>
-      <el-button type="primary" @click="selectLesson" size="large" style="">查询课程
-      </el-button>
+<!--    <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">-->
+<!--      <el-input v-model="input" style="width: 500px;margin-left: 20%"-->
+<!--                placeholder="请输入课程名称" size="large"/>-->
+<!--      <el-button type="primary" @click="selectLesson" size="large" style="">查询课程-->
+<!--      </el-button>-->
 
-      <el-button type="success" round @click="addLesson" size="large" style="margin-left: 100px">新增课程
-      </el-button>
-    </el-card>
+<!--      <el-button type="success" round @click="addLesson" size="large" style="margin-left: 100px">新增课程-->
+<!--      </el-button>-->
+<!--    </el-card>-->
     <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
-      <el-table v-loading="loading" :data="tableData" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%">
         <el-table-column label="课程号" width="200">
           <template #default="scope">
             <div style="display: flex; align-items: center">
@@ -45,18 +45,18 @@
             <el-button v-if="scope.row.teacherId===''" size="small" @click="showTeacher(scope.row.lessonId)" type="success">
               添加教师
             </el-button>
-            <el-button size="small" @click="selectStudent(scope.row.lessonId)">
+            <el-button size="small" type="success" @click="selectStudent(scope.row.lessonId)">
               查看学生
             </el-button>
-            <el-button size="small" @click="updateLesson(scope.row)">
-              修改
-            </el-button>
-            <el-button
-                size="small"
-                type="danger"
-                @click="deleteLesson(scope.row.id)">
-              删除
-            </el-button>
+<!--            <el-button size="small" @click="updateLesson(scope.row)">-->
+<!--              修改-->
+<!--            </el-button>-->
+<!--            <el-button-->
+<!--                size="small"-->
+<!--                type="danger"-->
+<!--                @click="deleteLesson(scope.row.id)">-->
+<!--              删除-->
+<!--            </el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -183,7 +183,7 @@
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue';
 import { Collection,UserFilled } from '@element-plus/icons-vue'
-import {queryAll, update,addByInfo,deleteById,addByTeacherId,queryById,queryByTeacherId} from "@/request/class/class";
+import {queryAll,queryAllByTeacherId, update,addByInfo,deleteById,addByTeacherId,queryById,queryByTeacherId} from "@/request/class/class";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
@@ -222,14 +222,6 @@ interface LessonInfo {
   hours: string
   score: string
 }
-
-const centerDialogVisible = ref(false)
-const centerDialogVisible1 = ref(false)
-const centerDialogVisible2 = ref(false)
-const input = ref<string>('')
-const teacherInput=ref<string>('')
-const teacher=ref<Teacher[]>([]);
-const loading = ref(true);
 const form = ref<Lesson>({
   id: '-1',
   lessonId: '',
@@ -243,6 +235,12 @@ const form1 = ref<LessonInfo>({
   hours: '',
   score: ''
 });
+const centerDialogVisible = ref(false)
+const centerDialogVisible1 = ref(false)
+const centerDialogVisible2 = ref(false)
+const input = ref<string>('')
+const teacherInput=ref<string>('')
+const teacher=ref<Teacher[]>([]);
 const selectStudent=(lessonId:string)=>{
   localStorage.setItem('lessonId', lessonId)
   router.push("student")
@@ -269,7 +267,6 @@ const addTeacherToClass=async (teacherId:string)=>{
   if(res.data){
     ElMessage.success("添加成功");
     teacherInput.value='';
-    centerDialogVisible2.value=false;
     await fetchData();
   }else {
     ElMessage.error("添加失败");
@@ -326,14 +323,13 @@ const add= async (data:LessonInfo)=>{
 const tableData= ref<LessonDto[]>([]);
 // 模拟后端返回的数据
 const fetchData = () => {
-  queryAll().then((res) => {
+  queryAllByTeacherId(localStorage.getItem('id')).then((res) => {
         console.log(res.data.data)
         tableData.value = res.data.data;
       }
   ).catch((error) => {
     console.error("出现错误", error);
   })
-  loading.value=false
 };
 const updateLesson=(data:Lesson)=>{
   centerDialogVisible.value=true;

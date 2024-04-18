@@ -1,17 +1,17 @@
 <template>
   <div style="width: 100%;height: 100%;">
     <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
-      <el-input v-model="input" style="width: 500px;margin-left: 20%"
-                placeholder="请输入课程名称" size="large"/>
-      <el-button type="primary" @click="selectLesson" size="large" style="">查询课程
+      <el-input v-model="input" style="width: 400px;margin-left: 20%"
+                placeholder="请输入教师名称" size="large"/>
+      <el-button type="primary" @click="selectLesson" size="large" style="">查询教师
       </el-button>
 
-      <el-button type="success" round @click="addLesson" size="large" style="margin-left: 100px">新增课程
+      <el-button type="success" round @click="addTeacher" size="large" style="margin-left: 100px">新增教师
       </el-button>
     </el-card>
     <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column label="课程号" width="400">
+        <el-table-column label="教师ID" width="400">
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <el-icon><Collection /></el-icon>
@@ -19,12 +19,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="课程名称" width="300">
+        <el-table-column label="教师名称" width="300">
           <template #default="scope">
             <el-popover effect="light" trigger="hover" placement="top" width="auto">
               <template #default>
-                <div>学时: {{ scope.row.hours }}</div>
-                <div>学分: {{ scope.row.score }}</div>
+                <div>权限: {{ scope.row.hours }}</div>
               </template>
               <template #reference>
                 <el-tag>{{ scope.row.lessonName }}</el-tag>
@@ -34,9 +33,6 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button size="small" @click="selectStudent(scope.row.lessonId)">
-              查看学生
-            </el-button>
             <el-button size="small" @click="updateLesson(scope.row)">
               修改
             </el-button>
@@ -52,22 +48,16 @@
 
       <el-dialog
           v-model="centerDialogVisible"
-          title="修改课程"
+          title="修改教师"
           width="500"
           align-center
       >
         <el-form :model="form" label-width="100px">
-          <el-form-item label="课程ID">
+          <el-form-item label="教师ID">
             <el-input v-model="form.lessonId"></el-input>
           </el-form-item>
-          <el-form-item label="课程名称">
+          <el-form-item label="教师名字">
             <el-input v-model="form.lessonName"></el-input>
-          </el-form-item>
-          <el-form-item label="学分">
-            <el-input v-model="form.score"></el-input>
-          </el-form-item>
-          <el-form-item label="学时">
-            <el-input v-model="form.hours"></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -83,22 +73,16 @@
       </el-dialog>
       <el-dialog
           v-model="centerDialogVisible1"
-          title="新增课程"
+          title="新增教师"
           width="500"
           align-center
       >
         <el-form :model="form1" label-width="100px">
-          <el-form-item label="课程ID">
+          <el-form-item label="教师ID">
             <el-input v-model="form1.lessonId"></el-input>
           </el-form-item>
-          <el-form-item label="课程名称">
+          <el-form-item label="教师名字">
             <el-input v-model="form1.lessonName"></el-input>
-          </el-form-item>
-          <el-form-item label="学分">
-            <el-input v-model="form1.score"></el-input>
-          </el-form-item>
-          <el-form-item label="学时">
-            <el-input v-model="form1.hours"></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -187,7 +171,7 @@ const deleteLesson=async (id:string)=>{
   }
 }
 
-const addLesson=()=>{
+const addTeacher=()=>{
   centerDialogVisible1.value=true;
 }
 const add= async (data:LessonInfo)=>{

@@ -14,16 +14,19 @@
             <img src="../assets/school.png" style="height: 50px;width: 70px;margin-top: 5px">
             <div style="font-size:large;margin-left: 10px;margin-top: 13px;font-weight: bold;color: black">在线批阅系统</div>
           </div>
-          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="1">
+          <el-sub-menu v-if="role==='ROOT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="1">
             <template #title>
               <el-icon size="30px"><Notification /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">信息管理</span>
             </template>
             <el-menu-item index="1-1" @click="toSchool">学院管理</el-menu-item>
             <el-menu-item index="1-2" @click="toClass">课程管理</el-menu-item>
-            <el-menu-item index="1-3" @click="toTeacher">教师管理</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2" @click="toMyClass">
+            <el-icon size="30px"><icon-menu /></el-icon>
+            <template #title><span style="font-size: 18px;margin-left: 10px" >我的课程</span></template>
+          </el-menu-item>
+          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
             <template #title>
               <el-icon size="30px"><Notification /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">考试安排</span>
@@ -31,11 +34,11 @@
             <el-menu-item index="2-1">测试</el-menu-item>
             <el-menu-item index="2-2">考试</el-menu-item>
           </el-sub-menu>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3" @click="toAnswer">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="toAnswer">
             <el-icon size="30px"><icon-menu /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px" >答题卡录入</span></template>
           </el-menu-item>
-          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4">
+          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
             <template #title>
               <el-icon size="30px"><Notification /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">批阅</span>
@@ -43,15 +46,15 @@
             <el-menu-item index="4-1">正常批阅</el-menu-item>
             <el-menu-item index="4-2">异常重阅</el-menu-item>
           </el-sub-menu>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
             <el-icon size="30px"><document /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">成绩统计</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7">
             <el-icon  size="30px"><setting /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">权限分配</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7" @click="toUser">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="8">
             <el-icon size="30px"><User /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">用户信息</span></template>
           </el-menu-item>
@@ -76,7 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {ref, onMounted} from 'vue';
 import {
   Document,
   Menu as IconMenu,
@@ -85,7 +88,8 @@ import {
 import {useRouter} from "vue-router";
 const username=ref(localStorage.getItem("name"));
 const mark =ref("欢迎使用");
-const opends=['1','2','3','4','5','6','7'];
+const opends=['1','2','3','4','5','6','7','8'];
+const role=ref('');
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
@@ -105,11 +109,16 @@ const toSchool=()=>{
 const toClass=()=>{
   mark.value="课程管理";
   router.push('class');
+  localStorage.setItem('class','class');
 }
-const toTeacher=()=>{
-  mark.value="教师管理";
-  router.push('teacher');
+const toMyClass=()=>{
+  mark.value="我的课程";
+  router.push('myclass');
+  localStorage.setItem('class','myclass');
 }
+onMounted(async () => {
+  role.value=localStorage.getItem('authorityRole')
+});
 </script>
 
 <style scoped>

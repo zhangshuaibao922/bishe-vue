@@ -1,7 +1,7 @@
 <template>
   <div style="width: 94%;height: 100%;margin: 3%">
     <div>
-      <el-row :gutter="20">
+      <el-row :gutter="20" v-loading="loading">
         <el-col :span="8" v-for="(item, index) in collegeList" :key="index"
                 style="margin-top: 10px; margin-bottom: 10px;">
           <el-card class="card-item" :body-style="{ padding: '20px' }">
@@ -104,6 +104,7 @@ interface Collegeinfo {
 const collegeList = ref<College[]>([]);
 const centerDialogVisible = ref(false)
 const centerDialogVisible1 = ref(false)
+const loading = ref(true)
 const form = ref<College>({
   id: -1,
   collegeId: '',
@@ -155,6 +156,7 @@ const fetchData = () => {
   ).catch((error) => {
     console.error("出现错误", error);
   })
+  loading.value=false;
 };
 
 const change = async (college: College) => {

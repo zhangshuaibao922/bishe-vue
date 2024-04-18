@@ -83,7 +83,7 @@ const ruleForm: loginData = reactive({
 const rules = {
   username: [
     {required: true, message: '请输入账号', trigger: 'blur'},
-    {min: 3, max: 10, message: '账号的长度在3-10之间', trigger: 'blur'},
+    {min: 3, max: 20, message: '账号的长度在3-10之间', trigger: 'blur'},
   ],
   password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
@@ -103,8 +103,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         } else {
           ElMessage.success("登录成功")
           localStorage.setItem('name', user.name)
-          console.log(localStorage.getItem('name'))
+          localStorage.setItem('id',ruleForm.username)
           localStorage.setItem('authorityRole', user.authorityRole)
+          console.log(localStorage.getItem('authorityRole'))
           router.push('/welcome');
         }
       }).catch((error: any) => {

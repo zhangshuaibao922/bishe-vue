@@ -18,20 +18,21 @@ export function queryAll(lessonId:string){
     })
 }
 
-export function queryByStudentId(studentId:string){
+export function queryById(id:string){
     return service({
-        url:'/student/'+studentId,
+        url:'/choose/'+id,
         method:'get',
     })
 }
 
-export function update(data:Lesson){
+export function queryByStudentId(data:ChooseInfo){
     return service({
-        url:'/lesson',
+        url:'/student/select',
         method:'put',
         data,
     })
 }
+
 
 export function addByInfo(data:ChooseInfo){
     return service({
@@ -42,9 +43,9 @@ export function addByInfo(data:ChooseInfo){
 }
 
 
-export function deleteById(id:string){
+export function deleteById(studentId:string){
     return service({
-        url:'/lesson/'+id,
+        url:'/choose/'+studentId,
         method:'delete',
     })
 }
