@@ -61,119 +61,119 @@
         </el-table-column>
       </el-table>
 
-      <el-dialog
-          v-model="centerDialogVisible"
-          title="修改课程"
-          width="500"
-          align-center
-      >
-        <el-form :model="form" label-width="100px">
-          <el-form-item label="课程ID">
-            <el-input v-model="form.lessonId"></el-input>
-          </el-form-item>
-          <el-form-item label="课程名称">
-            <el-input v-model="form.lessonName"></el-input>
-          </el-form-item>
-          <el-form-item label="学分">
-            <el-input v-model="form.score"></el-input>
-          </el-form-item>
-          <el-form-item label="学时">
-            <el-input v-model="form.hours"></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">
-              取消
-            </el-button>
-            <el-button type="primary" @click="change(form)">
-              确定
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-      <el-dialog
-          v-model="centerDialogVisible1"
-          title="新增课程"
-          width="500"
-          align-center
-      >
-        <el-form :model="form1" label-width="100px">
-          <el-form-item label="课程ID">
-            <el-input v-model="form1.lessonId"></el-input>
-          </el-form-item>
-          <el-form-item label="课程名称">
-            <el-input v-model="form1.lessonName"></el-input>
-          </el-form-item>
-          <el-form-item label="学分">
-            <el-input v-model="form1.score"></el-input>
-          </el-form-item>
-          <el-form-item label="学时">
-            <el-input v-model="form1.hours"></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="centerDialogVisible1 = false">
-              取消
-            </el-button>
-            <el-button type="primary" @click="add(form1)">
-              确定
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+<!--      <el-dialog-->
+<!--          v-model="centerDialogVisible"-->
+<!--          title="修改课程"-->
+<!--          width="500"-->
+<!--          align-center-->
+<!--      >-->
+<!--        <el-form :model="form" label-width="100px">-->
+<!--          <el-form-item label="课程ID">-->
+<!--            <el-input v-model="form.lessonId"></el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="课程名称">-->
+<!--            <el-input v-model="form.lessonName"></el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="学分">-->
+<!--            <el-input v-model="form.score"></el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="学时">-->
+<!--            <el-input v-model="form.hours"></el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--        <template #footer>-->
+<!--          <div class="dialog-footer">-->
+<!--            <el-button @click="centerDialogVisible = false">-->
+<!--              取消-->
+<!--            </el-button>-->
+<!--            <el-button type="primary" @click="change(form)">-->
+<!--              确定-->
+<!--            </el-button>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </el-dialog>-->
+<!--      <el-dialog-->
+<!--          v-model="centerDialogVisible1"-->
+<!--          title="新增课程"-->
+<!--          width="500"-->
+<!--          align-center-->
+<!--      >-->
+<!--        <el-form :model="form1" label-width="100px">-->
+<!--          <el-form-item label="课程ID">-->
+<!--            <el-input v-model="form1.lessonId"></el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="课程名称">-->
+<!--            <el-input v-model="form1.lessonName"></el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="学分">-->
+<!--            <el-input v-model="form1.score"></el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="学时">-->
+<!--            <el-input v-model="form1.hours"></el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--        <template #footer>-->
+<!--          <div class="dialog-footer">-->
+<!--            <el-button @click="centerDialogVisible1 = false">-->
+<!--              取消-->
+<!--            </el-button>-->
+<!--            <el-button type="primary" @click="add(form1)">-->
+<!--              确定-->
+<!--            </el-button>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </el-dialog>-->
 
 
-      <el-dialog
-          v-model="centerDialogVisible2"
-          title="添加教师"
-          width="500"
-          align-center
-      >
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <el-form>
-            <el-form-item label="教师ID">
-              <el-input v-model="teacherInput" style="width: 300px"></el-input>
-            </el-form-item>
-          </el-form>
-          <el-button type="primary" style="margin-bottom: 20px" @click="selectTeacher(teacherInput)">
-            搜索
-          </el-button>
-        </div>
-        <el-table :data=teacher style="width: 100%">
-          <el-table-column label="教师ID" width="160">
-            <template #default="scope">
-              <div style="display: flex; align-items: center">
-                <el-icon><UserFilled /></el-icon>
-                <span style="margin-left: 10px">{{ scope.row.teacherId}}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="姓名" width="160">
-            <template #default="scope">
-              <el-popover effect="light" trigger="hover" placement="top" width="auto">
-                <template #default>
-                  <div>个人简介: {{scope.row.description}}</div>
-                </template>
-                <template #reference>
-                  <el-tag>{{ scope.row.teacherName }}</el-tag>
-                </template>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button
-                  size="small"
-                  type="success"
-                  @click="addTeacherToClass(scope.row.teacherId)"
-              >添加
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-dialog>
+<!--      <el-dialog-->
+<!--          v-model="centerDialogVisible2"-->
+<!--          title="添加教师"-->
+<!--          width="500"-->
+<!--          align-center-->
+<!--      >-->
+<!--        <div style="display: flex; justify-content: space-between; align-items: center;">-->
+<!--          <el-form>-->
+<!--            <el-form-item label="教师ID">-->
+<!--              <el-input v-model="teacherInput" style="width: 300px"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-form>-->
+<!--          <el-button type="primary" style="margin-bottom: 20px" @click="selectTeacher(teacherInput)">-->
+<!--            搜索-->
+<!--          </el-button>-->
+<!--        </div>-->
+<!--        <el-table :data=teacher style="width: 100%">-->
+<!--          <el-table-column label="教师ID" width="160">-->
+<!--            <template #default="scope">-->
+<!--              <div style="display: flex; align-items: center">-->
+<!--                <el-icon><UserFilled /></el-icon>-->
+<!--                <span style="margin-left: 10px">{{ scope.row.teacherId}}</span>-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="姓名" width="160">-->
+<!--            <template #default="scope">-->
+<!--              <el-popover effect="light" trigger="hover" placement="top" width="auto">-->
+<!--                <template #default>-->
+<!--                  <div>个人简介: {{scope.row.description}}</div>-->
+<!--                </template>-->
+<!--                <template #reference>-->
+<!--                  <el-tag>{{ scope.row.teacherName }}</el-tag>-->
+<!--                </template>-->
+<!--              </el-popover>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="操作">-->
+<!--            <template #default="scope">-->
+<!--              <el-button-->
+<!--                  size="small"-->
+<!--                  type="success"-->
+<!--                  @click="addTeacherToClass(scope.row.teacherId)"-->
+<!--              >添加-->
+<!--              </el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--        </el-table>-->
+<!--      </el-dialog>-->
 
 
     </el-card>

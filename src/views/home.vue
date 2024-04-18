@@ -29,10 +29,10 @@
           <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
             <template #title>
               <el-icon size="30px"><Notification /></el-icon>
-              <span style="font-size: 18px;margin-left: 10px">考试安排</span>
+              <span style="font-size: 18px;margin-left: 10px">考试设置</span>
             </template>
-            <el-menu-item index="2-1">测试</el-menu-item>
-            <el-menu-item index="2-2">考试</el-menu-item>
+            <el-menu-item index="2-1" @click="toTest">测试</el-menu-item>
+            <el-menu-item index="2-2" @click="toExam">考试</el-menu-item>
           </el-sub-menu>
           <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="toAnswer">
             <el-icon size="30px"><icon-menu /></el-icon>
@@ -115,6 +115,14 @@ const toMyClass=()=>{
   mark.value="我的课程";
   router.push('myclass');
   localStorage.setItem('class','myclass');
+}
+const toTest=()=>{
+  mark.value="测试安排"
+  router.push('test');
+}
+const toExam=()=>{
+  mark.value="考试安排"
+  router.push('exam');
 }
 onMounted(async () => {
   role.value=localStorage.getItem('authorityRole')

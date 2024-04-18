@@ -8,6 +8,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import axios from 'axios';
+import {upload} from "@/request/upload/upload"
 
 export default defineComponent({
   setup() {
@@ -44,7 +45,7 @@ export default defineComponent({
       }
 
       try {
-        await axios.post('/upload', formData);
+        await upload("17775589455302656",formData);
         console.log('上传成功');
       } catch (error) {
         console.error('上传失败:', error);

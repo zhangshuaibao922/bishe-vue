@@ -1,17 +1,17 @@
 <template>
   <div style="width: 100%;height: 100%;">
-    <el-card style="margin-left: 100px;margin-right: 100px;height: 10%" shadow="hover">
-      <el-button type="primary" @click="doBack" size="large" style="">返回课程
+    <el-card shadow="hover" style="margin-left: 100px;margin-right: 100px;height: 10%">
+      <el-button size="large" style="" type="primary" @click="doBack">返回课程
       </el-button>
-      <el-input v-model="input" style="width: 400px;margin-left: 50px"
-                placeholder="请输入学号" size="large"/>
-      <el-button type="primary" @click="selectStudent" size="large" style="">查询学生
+      <el-input v-model="input" placeholder="请输入学号"
+                size="large" style="width: 400px;margin-left: 50px"/>
+      <el-button size="large" style="" type="primary" @click="selectStudent">查询学生
       </el-button>
 
-      <el-button type="success" round @click="addStudent" size="large" style="margin-left: 100px">新增学生
+      <el-button round size="large" style="margin-left: 100px" type="success" @click="addStudent">新增学生
       </el-button>
     </el-card>
-    <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;" shadow="never">
+    <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
       <el-table v-loading="loading" :data="tableData" style="width: 100%">
         <el-table-column label="学号" width="400">
           <template #default="scope">
@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column label="姓名" width="400">
           <template #default="scope">
-            <el-popover effect="light" trigger="hover" placement="top" width="auto">
+            <el-popover effect="light" placement="top" trigger="hover" width="auto">
               <template #default>
                 <div v-if="scope.row.gender==='1'">性别: 男</div>
                 <div v-if="scope.row.gender==='0'">性别: 女</div>
@@ -52,9 +52,9 @@
 
       <el-dialog
           v-model="centerDialogVisible1"
+          align-center
           title="新增学生"
           width="500"
-          align-center
       >
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <el-form>
@@ -62,7 +62,7 @@
               <el-input v-model="form" style="width: 300px"></el-input>
             </el-form-item>
           </el-form>
-          <el-button type="primary" style="margin-bottom: 20px" @click="select(form)">
+          <el-button style="margin-bottom: 20px" type="primary" @click="select(form)">
             搜索
           </el-button>
         </div>
@@ -79,7 +79,7 @@
           </el-table-column>
           <el-table-column label="姓名" width="160">
             <template #default="scope">
-              <el-popover effect="light" trigger="hover" placement="top" width="auto">
+              <el-popover effect="light" placement="top" trigger="hover" width="auto">
                 <template #default>
                   <div v-if="scope.row.gender==='1'">性别: 男</div>
                   <div v-if="scope.row.gender==='0'">性别: 女</div>
@@ -113,9 +113,10 @@
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue';
 import {Collection} from '@element-plus/icons-vue'
-import {queryAll, queryByStudentId, addByInfo,deleteById,queryById} from "@/request/student/student";
+import {queryAll, queryByStudentId, addByInfo, deleteById, queryById} from "@/request/student/student";
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
+
 const router = useRouter();
 
 interface Student {
@@ -142,36 +143,35 @@ const student = ref<Student[]>([]);
 const centerDialogVisible1 = ref(false);
 const input = ref<string>('');
 const loading = ref(true);
-const doBack=()=>{
+const doBack = () => {
   router.push(localStorage.getItem('class'));
 }
 const selectStudent = async () => {
-  if(input.value==null||input.value.length==0){
+  if (input.value == null || input.value.length == 0) {
     await fetchData();
-  }else {
-    const res=await queryByStudentId({
-      lessonId: localStorage.getItem('lessonId'),
-      studentId:input.value
-    }
-
+  } else {
+    const res = await queryByStudentId({
+          lessonId: localStorage.getItem('lessonId'),
+          studentId: input.value
+        }
     );
-    if(res.data.length==0) {
+    if (res.data.length == 0) {
       ElMessage.error("学生不存在")
-    }else {
+    } else {
       ElMessage.success("查询成功");
       tableData.value = res.data
       console.log(res.data)
     }
-    input.value='';
+    input.value = '';
   }
 }
 
 const deleteLesson = async (studentId: string) => {
-  const res=await deleteById(studentId);
-  if(res.data){
+  const res = await deleteById(studentId);
+  if (res.data) {
     ElMessage.success("删除成功");
     await fetchData();
-  }else {
+  } else {
     ElMessage.error("删除失败")
   }
 }
@@ -192,11 +192,11 @@ const fetchData = () => {
   ).catch((error) => {
     console.error("出现错误", error);
   })
-  loading.value=false;
+  loading.value = false;
 };
 
 const select = async (studentId: string) => {
-  if(studentId.length == 0){
+  if (studentId.length == 0) {
     ElMessage.error("请输入学号")
   }
   const res = await queryById(studentId);
