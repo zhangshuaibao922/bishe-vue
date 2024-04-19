@@ -44,6 +44,13 @@ export function queryAllByIdForModel(modelClass:string){
     })
 }
 
+export function deleteTest(id:number){
+    return service({
+        url:'/model/'+id,
+        method:'delete',
+    })
+}
+
 export function insertTestModelDto(data:modelToSet){
     return service({
         url:'/model/test',

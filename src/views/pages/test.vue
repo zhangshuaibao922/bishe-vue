@@ -14,31 +14,42 @@
           :span-method="objectSpanMethod"
           border
           style="width: 100%;"
+          height="700px"
       >
         <el-table-column label="课程编号" prop="lessonId" width="180"/>
         <el-table-column label="考试名称" prop="examName"/>
         <el-table-column label="答题卡模版" prop="ModelName">
           <template #default="scope">
-            <span v-if="scope.row.paperClassId!==''" style="margin-left: 10px">{{ scope.row.paperClassId }}</span>
+            <span v-if="scope.row.paperClassId!==''">{{ scope.row.paperClassId }}</span>
             <span v-else style="color:red;"> 暂无</span>
           </template>
         </el-table-column>
         <el-table-column label="考试日期" prop="examData"/>
         <el-table-column label="操作">
           <template #default="scope">
+            <div style="display: flex; justify-content: left;">
             <el-button
                 v-if="scope.row.paperClassId===''"
                 size="small"
                 type="success"
                 @click="addTeacherToClass(scope.row)"
-            >设置
+                style="margin-right: 12px"
+            >模版设置
+            </el-button>
+            <el-button
+                v-else
+                size="small"
+                type="primary"
+                @click="toAnswer(scope.row)"
+            >录入答题卡
             </el-button>
             <el-button
                 size="small"
                 type="danger"
-                @click="deleteLesson(scope.row.id)"
+                @click="deleteById(scope.row.id)"
             >删除
             </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -50,11 +61,11 @@
           width="500"
       >
         <el-form :model="form" label-width="100px">
-          <el-form-item label="课程">
+          <el-form-item label="模版">
             <el-select
                 v-model="form.paperClassId"
                 clearable
-                placeholder="选择课程"
+                placeholder="选择模版"
                 style="width: 300px"
             >
               <el-option
@@ -145,7 +156,8 @@ import {ref, onMounted} from 'vue';
 import {ElMessage} from "element-plus";
 import type {TableColumnCtx} from 'element-plus'
 import {queryAllByTeacherId} from "@/request/class/class";
-import {addExam, queryAllByIdForModel, queryByExamClass, queryByExamName,insertTestModelDto} from "@/request/test/test"
+import {addExam, queryAllByIdForModel, queryByExamClass, queryByExamName,insertTestModelDto,deleteTest} from "@/request/test/test"
+import router from "@/router";
 
 interface Exam {
   id: number,
@@ -155,7 +167,7 @@ interface Exam {
   examClass: string,
   examSet: string,
   paperClassId: string,
-  ModelName: string,
+  modelName: string,
   examData: string,
 }
 
@@ -233,6 +245,25 @@ const form1 = ref<ExamInfo>({
   examData: '',
 });
 
+const toAnswer=(data:Exam)=>{
+  localStorage.setItem('examLessonId',data.lessonId)
+  localStorage.setItem('examId',data.examId)
+  localStorage.setItem('examName',data.examName)
+  localStorage.setItem('examData',data.examData)
+  localStorage.setItem('modelName',data.modelName)
+  router.push("answer")
+}
+
+const deleteById=async (id:number)=>{
+  const res=await deleteTest(id);
+  if(res.data.data){
+    ElMessage.success("删除成功");
+  }else {
+    ElMessage.error("删除失败");
+  }
+  await getTest();
+}
+
 const addSetAndModel=async ()=>{
   const res=await insertTestModelDto(form.value);
   if(res.data.data){
@@ -286,6 +317,9 @@ const add = async () => {
     } else {
       ElMessage.error("添加失败")
     }
+    form1.value.lessonId='';
+    form1.value.examName='';
+    form1.value.examData='';
   }
 }
 

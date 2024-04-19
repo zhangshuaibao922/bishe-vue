@@ -9,7 +9,7 @@
 <!--      <el-button type="success" round @click="addLesson" size="large" style="margin-left: 100px">新增课程-->
 <!--      </el-button>-->
 <!--    </el-card>-->
-    <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
+    <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never" height="900px">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column label="课程号" width="200">
           <template #default="scope">

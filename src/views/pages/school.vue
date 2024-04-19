@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 94%;height: 100%;margin: 3%">
+  <div style="width: 94%;height: 100%;margin: 1%">
     <div>
       <el-row :gutter="20" v-loading="loading">
         <el-col :span="8" v-for="(item, index) in collegeList" :key="index"

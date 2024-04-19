@@ -10,7 +10,7 @@
       </el-button>
     </el-card>
     <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
-      <el-table v-loading="loading" :data="tableData" style="width: 100%">
+      <el-table v-loading="loading" :data="tableData" style="width: 100%" height="700px">
         <el-table-column label="课程号" width="200">
           <template #default="scope">
             <div style="display: flex; align-items: center">

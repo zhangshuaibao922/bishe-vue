@@ -31,14 +31,10 @@
               <el-icon size="30px"><Notification /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">考试设置</span>
             </template>
-            <el-menu-item index="2-1" @click="toTest">测试</el-menu-item>
-            <el-menu-item index="2-2" @click="toExam">考试</el-menu-item>
+            <el-menu-item index="3-1" @click="toTest">测试</el-menu-item>
+            <el-menu-item index="3-2" @click="toExam">考试</el-menu-item>
           </el-sub-menu>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="toAnswer">
-            <el-icon size="30px"><icon-menu /></el-icon>
-            <template #title><span style="font-size: 18px;margin-left: 10px" >答题卡录入</span></template>
-          </el-menu-item>
-          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
+          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4">
             <template #title>
               <el-icon size="30px"><Notification /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">批阅</span>
@@ -46,15 +42,15 @@
             <el-menu-item index="4-1">正常批阅</el-menu-item>
             <el-menu-item index="4-2">异常重阅</el-menu-item>
           </el-sub-menu>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
             <el-icon size="30px"><document /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">成绩统计</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
             <el-icon  size="30px"><setting /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">权限分配</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="8">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7">
             <el-icon size="30px"><User /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">用户信息</span></template>
           </el-menu-item>
@@ -88,7 +84,7 @@ import {
 import {useRouter} from "vue-router";
 const username=ref(localStorage.getItem("name"));
 const mark =ref("欢迎使用");
-const opends=['1','2','3','4','5','6','7','8'];
+const opends=['1','2','3','4','5','6','7'];
 const role=ref('');
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
@@ -98,10 +94,6 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 const router = useRouter();
 
-const toAnswer=()=>{
-  mark.value="答题卡录入";
-  router.push('answer');
-}
 const toSchool=()=>{
   mark.value="学院管理";
   router.push('school');
