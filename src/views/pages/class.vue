@@ -36,7 +36,8 @@
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <el-icon><UserFilled /></el-icon>
-              <span style="margin-left: 10px">{{ scope.row.teacherName }}</span>
+              <span v-if="scope.row.teacherName!==''" style="margin-left: 10px">{{ scope.row.teacherName }}</span>
+              <span v-else style="margin-left: 10px;color: red">暂无任课教师</span>
             </div>
           </template>
         </el-table-column>

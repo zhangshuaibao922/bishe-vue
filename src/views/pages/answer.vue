@@ -18,7 +18,7 @@
         <el-input v-model="form.examData"></el-input>
       </el-form-item>
     </el-form>
-    <div style="text-align: center;">
+    <div v-if="show" style="text-align: center;">
       <el-button @click="select">
         选择文件夹
       </el-button>
@@ -30,7 +30,7 @@
   <el-card v-loading="loading2" shadow="never" style="margin-left: 50px;margin-right: 50px;height: 60%;">
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
       <el-text size="large" type="primary">课程 {{form.lessonId}} 的 {{form.examName}} 考试已录入答题卡如下</el-text>
-      <el-button type="primary" style="margin-top: 10px;">进行答题卡切割</el-button>
+      <el-button v-if="show" type="primary" style="margin-top: 10px;">进行答题卡切割</el-button>
     </div>
     <el-table
         :data="tableData"
@@ -79,6 +79,7 @@ interface ExamInfo{
   examData:string,
   modelName:string,
 }
+const show=ref(true);
 const loading2=ref(false);
 // 定义 fileInput 的引用
 const fileInput = ref(null);
@@ -124,10 +125,18 @@ const handleFolderChange = () => {
 
 const getTableData= async ()=>{
   const  res=await queryByIdExam(form.value.lessonId,form.value.examId);
-  tableData.value=res.data.data;
-  loading2.value=false;
-  if(res.data.message==="部分未上传"){
-    ElMessage.success(res.data.message)
+  if(res.data.data===null){
+    ElMessage.success("没有学生选择该课程")
+    show.value=false;
+    loading2.value=false;
+  }else {
+    tableData.value=res.data.data;
+    loading2.value=false;
+    if(res.data.message==="部分未上传"){
+      ElMessage.success(res.data.message)
+    }else {
+      ElMessage.success("上传答题卡成功")
+    }
   }
 }
 
@@ -151,10 +160,9 @@ const uploadImages = async () => {
   }
 
   try {
-    await upload(form.value.examId, formData);
+    await upload(form.value.lessonId,form.value.examId, formData);
     console.log('上传成功');
     loading.value=false;
-    ElMessage.success('上传成功')
     loading2.value=true;
     await getTableData();
   } catch (error) {

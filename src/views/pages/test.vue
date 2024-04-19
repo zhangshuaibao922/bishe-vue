@@ -20,7 +20,7 @@
         <el-table-column label="考试名称" prop="examName"/>
         <el-table-column label="答题卡模版" prop="ModelName">
           <template #default="scope">
-            <span v-if="scope.row.paperClassId!==''">{{ scope.row.paperClassId }}</span>
+            <span v-if="scope.row.paperClassId!==''">{{ scope.row.modelName }}</span>
             <span v-else style="color:red;"> 暂无</span>
           </template>
         </el-table-column>
