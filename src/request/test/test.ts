@@ -31,7 +31,7 @@ export function addExam(data:ExamInfo){
 
 export function queryByExamClass(examClass:string,teacherId:string){
     return service({
-        url:'/exam/all/'+examClass+"/"+teacherId,
+        url:'/exam/all/'+examClass+"/"+teacherId+"/1",
         method:'get',
     })
 }

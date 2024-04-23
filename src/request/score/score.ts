@@ -45,7 +45,12 @@ export function queryByExamIdAndTeacherId(examId:string,answerId:string,teacherI
     })
 }
 
-
+export function querySeeScore(examClass:string,teacherId:string){
+    return service({
+        url:'/exam/all/'+examClass+"/"+teacherId+"/2",
+        method:'get',
+    })
+}
 export function edit(data:Score){
     return service({
         url:'/score',

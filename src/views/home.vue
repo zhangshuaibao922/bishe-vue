@@ -38,9 +38,9 @@
             <el-icon size="30px"><icon-menu /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px" >在线批阅</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5" @click="toSeeScore">
             <el-icon size="30px"><document /></el-icon>
-            <template #title><span style="font-size: 18px;margin-left: 10px">成绩统计</span></template>
+            <template #title><span style="font-size: 18px;margin-left: 10px" >成绩统计</span></template>
           </el-menu-item>
           <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
             <el-icon  size="30px"><setting /></el-icon>
@@ -115,6 +115,10 @@ const toExam=()=>{
 const toScore=()=>{
   mark.value="在线批阅"
   router.push('score');
+}
+const toSeeScore=()=>{
+  mark.value="成绩统计"
+  router.push('seeScore');
 }
 onMounted(async () => {
   role.value=localStorage.getItem('authorityRole')
