@@ -6,3 +6,11 @@ export function queryByIdExam(lessonId:string,examId:string){
         method:'get',
     })
 }
+
+
+export function cutting(paperClassId:string,examId:string){
+    return service({
+        url:'/cut/'+paperClassId+"/"+examId,
+        method:'get',
+    })
+}

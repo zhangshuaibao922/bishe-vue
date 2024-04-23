@@ -1,72 +1,168 @@
 <template>
-  <div style="width: 94%;height: 100%;margin: 3%">
-    <div>
-      <el-row :gutter="20" v-loading="loading">
-        <el-col :span="8" v-for="(item, index) in collegeList" :key="index"
-                style="margin-top: 10px; margin-bottom: 10px;">
-          <el-card class="card-item" :body-style="{ padding: '20px' }">
-            <template #header>
-              <div style="display: flex; justify-content: flex-end; align-items: center;">
-                <el-button type="primary" v-show="item.id!==-1" @click="showDialog(item)">修改</el-button>
-                <el-button type="danger" v-show="item.id!==-1" @click="deletebyId(item.id)">删除</el-button>
-                <div v-if="item.id===-1" style="height: 32px;width: 10px"></div>
-              </div>
-            </template>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%">
-              <div v-if="item.id!==-1" style="width: 50px; height: 50px; background: red"></div>
-              <div v-if="item.id===-1"
-                   style="width: 100%; height: 50px; background: whitesmoke;display: flex; justify-content: center; align-items: center;" @click="addCollege">
-                <span style="margin-left: 10px;font-size: 20px;font-weight: bold;color: black">新增学院</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="text-align: right;">
-                  <span>{{ item.collegeId }}</span>
-                  <p>{{ item.collegeName }}</p>
-                </div>
-              </div>
+  <div style="width: 100%;height: 100%;">
+    <el-card shadow="hover" style="margin-left: 100px;margin-right: 100px;height: 10%">
+      <el-input v-model="input" placeholder="请输入考试名称"
+                size="large" style="width: 400px;margin-left: 50px"/>
+      <el-button size="large" style="" type="primary" @click="selectTest">查询考试
+      </el-button>
+      <el-button round size="large" style="margin-left: 100px" type="success" @click="addTest">新增考试
+      </el-button>
+    </el-card>
+    <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
+      <el-table
+          :data="tableData"
+          border
+          height="700px"
+          style="width: 100%;"
+      >
+        <el-table-column label="课程编号" prop="lessonId" width="180"/>
+        <el-table-column label="考试名称" prop="examName"/>
+        <el-table-column label="答题卡模版">
+          <template #default="scope">
+            <span v-if="scope.row.paperClassId!==''">{{ scope.row.modelName }}</span>
+            <span v-else style="color:red;"> 暂无</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="考试日期" prop="examData"/>
+        <el-table-column label="考试状态">
+          <template #default="scope">
+            <el-text v-if="scope.row.isDelete!==1" type="primary" size="large">正常</el-text>
+            <el-text v-else type="danger" size="large">结束</el-text>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="300px">
+          <template #default="scope">
+            <div style="display: flex; justify-content: left;">
+              <el-button
+                  v-if="scope.row.paperClassId===''"
+                  size="small"
+                  style="margin-right: 12px"
+                  type="success"
+                  @click="addTeacherToClass(scope.row)"
+              >模版设置
+              </el-button>
+              <el-button
+                  v-else
+                  size="small"
+                  type="primary"
+                  @click="toAnswer(scope.row)"
+              >录入答题卡
+              </el-button>
+              <el-button v-if="scope.row.paperClassId!==''"
+                         size="small"
+                         type="warning"
+                         @click="toChangeStatus(scope.row)"
+              >结束批阅
+              </el-button>
+              <el-button
+                  size="small"
+                  type="danger"
+                  @click="deleteById(scope.row.id)"
+              >删除考试
+              </el-button>
             </div>
-          </el-card>
-        </el-col>
-      </el-row>
+          </template>
+        </el-table-column>
+      </el-table>
+
       <el-dialog
           v-model="centerDialogVisible"
-          title="修改学院"
-          width="500"
           align-center
+          title="批阅设置"
+          width="500"
       >
         <el-form :model="form" label-width="100px">
-          <el-form-item label="学院ID">
-            <el-input v-model="form.collegeId"></el-input>
-          </el-form-item>
-          <el-form-item label="学院名称">
-            <el-input v-model="form.collegeName"></el-input>
+          <el-form-item label="模版">
+            <el-select
+                v-model="form.paperClassId"
+                clearable
+                placeholder="选择模版"
+                style="width: 300px"
+            >
+              <el-option
+                  v-for="item in modelOptions"
+                  :key="item.paperClassId"
+                  :label="item.modelName"
+                  :value="item.paperClassId"
+              >
+                <span style="float: left">{{ item.modelName }}</span>
+                <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">模版ID：{{
+                    item.paperClassId
+                  }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
+        <div v-for="index in 8" v-if="form.paperClassId==='3'" class="m-4">
+          <div style="margin-left: 55px">
+            <el-text type="primary" size="large">第{{index}}题</el-text>
+            <el-select
+                v-model="listTeacher[index-1]"
+                collapse-tags
+                multiple
+                placeholder="Select"
+                style="width: 300px;margin-top: 5px;margin-left: 5px"
+            >
+              <el-option
+                  v-for="item in optionsTeacher"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              />
+            </el-select>
+          </div>
+        </div>
         <template #footer>
           <div class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">
+            <el-button @click="cancelSet">
               取消
             </el-button>
-            <el-button type="primary" @click="change(form)">
+            <el-button type="primary" @click="addSetAndModel()">
               确定
             </el-button>
           </div>
         </template>
       </el-dialog>
 
-
       <el-dialog
           v-model="centerDialogVisible1"
-          title="新增学院"
-          width="500"
           align-center
+          title="新增测试"
+          width="500"
       >
-        <el-form :model="form1" label-width="100px">
-          <el-form-item label="学院ID">
-            <el-input v-model="form1.collegeId"></el-input>
+        <el-form :model="form1" label-position="left" label-width="100px">
+          <el-form-item label="课程">
+            <el-select
+                v-model="form1.lessonId"
+                clearable
+                placeholder="选择课程"
+                style="width: 300px"
+            >
+              <el-option
+                  v-for="item in options"
+                  :key="item.lessonId"
+                  :label="item.lessonName"
+                  :value="item.lessonId"
+              >
+                <span style="float: left">{{ item.lessonName }}</span>
+                <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">{{
+                    item.lessonId
+                  }}</span>
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="学院名称">
-            <el-input v-model="form1.collegeName"></el-input>
+          <el-form-item label="考试名称">
+            <el-input v-model="form1.examName" style="width: 300px"></el-input>
+          </el-form-item>
+          <el-form-item label="考试日期">
+            <el-date-picker
+                v-model="form1.examData"
+                format="YYYY/MM/DD"
+                placeholder="Pick a Date"
+                style="width: 300px"
+                type="date"
+                value-format="YYYY-MM-DD"
+            />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -74,122 +170,264 @@
             <el-button @click="centerDialogVisible1 = false">
               取消
             </el-button>
-            <el-button type="primary" @click="add(form1)">
+            <el-button type="primary" @click="add()">
               确定
             </el-button>
           </div>
         </template>
       </el-dialog>
 
-    </div>
+
+    </el-card>
   </div>
 </template>
-
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue';
-import {query, queryById, addByInfo, deleteByid} from "@/request/school/query";
 import {ElMessage} from "element-plus";
+import type {TableColumnCtx} from 'element-plus'
+import {queryAllByTeacherId} from "@/request/class/class";
+import {
+  addExam,
+  queryAllByIdForModel,
+  queryByExamClass,
+  queryByExamName,
+  insertTestModelDto,
+  deleteTest,
+  queryTeacher, insertExamModelDto
+} from "@/request/test/test"
+import router from "@/router";
+import {updateExam} from "@/request/score/score";
 
-interface College {
+const optionsTeacher = ref([]);
+
+
+interface Exam {
   id: number,
-  collegeId: string,
-  collegeName: string,
+  examId: string,
+  lessonId: string,
+  examName: string,
+  examClass: string,
+  examSet: string,
+  paperClassId: string,
+  modelName: string,
+  examData: string,
+  isDelete: number,
 }
 
-interface Collegeinfo {
-  collegeId: string,
-  collegeName: string,
+interface ExamInfo {
+  examId: string,
+  lessonId: string,
+  examName: string,
+  examClass: string,
+  examSet: string,
+  paperClassId: string,
+  examData: string,
 }
 
-const collegeList = ref<College[]>([]);
-const centerDialogVisible = ref(false)
+interface LessonDto {
+  id: string
+  lessonId: string
+  lessonName: string
+  hours: string
+  score: string
+  teacherId: string
+  teacherName: string
+}
+
+interface LessonDtoInfo {
+  lessonId: string
+  lessonName: string
+}
+
+
+interface Model {
+  id: number,
+  modelName: string,
+  modelClass: string,
+  paperClassId: string,
+  modelNumber: string,
+}
+
+interface ModelInfo {
+  modelName: string,
+  paperClassId: string,
+}
+
+interface modelToSet {
+  id: number,
+  teacherId: string,
+  paperClassId: string,
+}
+
+interface ModelToSetExam {
+  teacherId: string;
+  paperClassId: string;
+  data: any[][];
+}
+
+
 const centerDialogVisible1 = ref(false)
-const loading = ref(true)
-const form = ref<College>({
+const centerDialogVisible = ref(false)
+const tableData = ref<Exam[]>([]);
+const lessonList = ref<LessonDto[]>([]);
+const options = ref<LessonDtoInfo[]>([]);
+const modelOptions = ref<ModelInfo[]>([]);
+const modelList = ref<Model[]>([]);
+const input = ref('');
+const form = ref<modelToSet>({
   id: -1,
-  collegeId: '',
-  collegeName: '',
+  teacherId: localStorage.getItem('id'),
+  paperClassId: '',
 });
-const form1 = ref<Collegeinfo>({
-  collegeId: '',
-  collegeName: '',
+const form1 = ref<ExamInfo>({
+  examId: '',
+  lessonId: '',
+  examName: '',
+  examClass: '2',
+  examSet: '',
+  paperClassId: '',
+  examData: '',
 });
-const showDialog = (data: College) => {
-  centerDialogVisible.value = true;
-  form.value.id = data.id;
-  form.value.collegeId = data.collegeId;
-  form.value.collegeName = data.collegeName;
-};
+const listTeacher = ref(Array.from({length: 7}, () => []));
 
-const addCollege = () => {
-  centerDialogVisible1.value = true;
-  console.log(form1)
+const toChangeStatus= async (data:Exam)=>{
+  data.isDelete=1
+  const res=await updateExam(data);
+  if(res.data){
+    ElMessage.success("该考试已截止")
+    await getTest();
+  }
+}
+const toAnswer = (data: Exam) => {
+  localStorage.setItem('examLessonId', data.lessonId)
+  localStorage.setItem('examId', data.examId)
+  localStorage.setItem('examName', data.examName)
+  localStorage.setItem('examData', data.examData)
+  localStorage.setItem('modelName', data.modelName)
+  localStorage.setItem('paperClassId', data.paperClassId)
+  router.push("answer")
 }
 
-const deletebyId = async (id: number) => {
-  console.log(id)
-  const res =await deleteByid(id);
-  console.log(res.data);
-  if (res.data) {
+const deleteById = async (id: number) => {
+  const res = await deleteTest(id);
+  if (res.data.data) {
     ElMessage.success("删除成功");
-    await fetchData();
   } else {
     ElMessage.error("删除失败");
   }
+  await getTest();
 }
 
-const resetForm = () => {
-  ElMessage.info("取消修改");
-};
+const addSetAndModel = async () => {
+  console.log(listTeacher.value)
+  const res=await insertExamModelDto({
+    id:form.value.id,
+    teacherId: form.value.teacherId,
+    paperClassId: form.value.paperClassId,
+    data: listTeacher.value,
+  });
+  if(res.data.data){
+    ElMessage.success("设置成功");
+    await getTest();
+    centerDialogVisible.value=false;
+    form.value.id=-1;
+  }else {
+    ElMessage.error("设置失败");
+    centerDialogVisible.value=false;
+    form.value.id=-1;
+  }
+}
+
+const addTeacherToClass = (data: Exam) => {
+  form.value.id = data.id;
+  centerDialogVisible.value = true;
+}
+const cancelSet = () => {
+  centerDialogVisible.value = false;
+  form.value.id = -1;
+}
+const selectTest = async () => {
+  if (input.value == null || input.value.length == 0) {
+    ElMessage.success("查询成功");
+    await getTest();
+  } else {
+    const res = await queryByExamName(input.value);
+    console.log(res.data.data)
+    if (res.data.data === null) {
+      ElMessage.error("考试不存在")
+    } else {
+      ElMessage.success("查询成功");
+      tableData.value = res.data.data
+    }
+    input.value = '';
+  }
+}
+const addTest = () => {
+  centerDialogVisible1.value = true;
+}
+const add = async () => {
+  if (form1.value.lessonId === '' || form1.value.examName === '' || form1.value.examData === '') {
+    ElMessage.error("请填写相关信息")
+  } else {
+    console.log(form1.value)
+    const res = await addExam(form1.value);
+    if (res.data) {
+      ElMessage.success("记得进行批阅设置");
+      await getTest();
+      centerDialogVisible1.value = false;
+    } else {
+      ElMessage.error("添加失败")
+    }
+    form1.value.lessonId = '';
+    form1.value.examName = '';
+    form1.value.examData = '';
+  }
+}
 
 // 模拟后端返回的数据
-const fetchData = () => {
-  query().then((res) => {
-        console.log(res.data.data)
-        collegeList.value = res.data.data;
-        collegeList.value.push({
-          id: -1,
-          collegeId: '',
-          collegeName: '',
-        })
+const getLesson = () => {
+  queryAllByTeacherId(localStorage.getItem('id')).then((res) => {
+        lessonList.value = res.data.data;
+        for (let i = 0; i < lessonList.value.length; i++) {
+          options.value.push({lessonId: lessonList.value[i].lessonId, lessonName: lessonList.value[i].lessonName})
+        }
       }
   ).catch((error) => {
     console.error("出现错误", error);
   })
-  loading.value=false;
 };
-
-const change = async (college: College) => {
-  // 在这里执行修改操作，你可以访问传递的 collegeId 参数
-  console.log('修改的学院', college.collegeName);
-  const res = await queryById(college);
-  console.log(res.data);
-  if (res.data) {
-    ElMessage.success("修改成功");
-    centerDialogVisible.value = false;
-    await fetchData();
-  } else {
-    ElMessage.error("修改失败");
-    centerDialogVisible.value = false;
+const getTest = () => {
+  queryByExamClass("2",localStorage.getItem('id')).then((res) => {
+    tableData.value = res.data.data;
+  }).catch((error) => {
+    console.error("出现错误", error);
+  })
+}
+const getTestModel = () => {
+  queryAllByIdForModel("2").then((res) => {
+    modelList.value = res.data.data;
+    for (let i = 0; i < modelList.value.length; i++) {
+      modelOptions.value.push({modelName: modelList.value[i].modelName, paperClassId: modelList.value[i].paperClassId})
+    }
+  }).catch((error) => {
+    console.error("出现错误", error);
+  })
+}
+const getTeacher = async () => {
+  const res = await queryTeacher();
+  for (let i = 0; i < res.data.data.length; i++) {
+    optionsTeacher.value.push({
+      value: res.data.data[i].teacherId,
+      label: res.data.data[i].teacherName,
+    })
   }
-};
-const add = async (data: Collegeinfo) => {
-  console.log(data)
-  const res = await addByInfo(data);
-  console.log(res.data);
-  if (res.data) {
-    ElMessage.success("新增成功");
-    centerDialogVisible1.value = false;
-    form1.value.collegeId='';
-    form1.value.collegeName='';
-    await fetchData();
-  } else {
-    ElMessage.error("新增失败");
-    centerDialogVisible1.value = false;
-  }
+  console.log()
 }
 onMounted(async () => {
-  await fetchData();
+  await getLesson();
+  await getTest();
+  await getTestModel();
+  await getTeacher();
 });
 </script>
 

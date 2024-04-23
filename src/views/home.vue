@@ -34,14 +34,10 @@
             <el-menu-item index="3-1" @click="toTest">测试</el-menu-item>
             <el-menu-item index="3-2" @click="toExam">考试</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4">
-            <template #title>
-              <el-icon size="30px"><Notification /></el-icon>
-              <span style="font-size: 18px;margin-left: 10px">批阅</span>
-            </template>
-            <el-menu-item index="4-1">正常批阅</el-menu-item>
-            <el-menu-item index="4-2">异常重阅</el-menu-item>
-          </el-sub-menu>
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="toScore">
+            <el-icon size="30px"><icon-menu /></el-icon>
+            <template #title><span style="font-size: 18px;margin-left: 10px" >在线批阅</span></template>
+          </el-menu-item>
           <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5">
             <el-icon size="30px"><document /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">成绩统计</span></template>
@@ -115,6 +111,10 @@ const toTest=()=>{
 const toExam=()=>{
   mark.value="考试安排"
   router.push('exam');
+}
+const toScore=()=>{
+  mark.value="在线批阅"
+  router.push('score');
 }
 onMounted(async () => {
   role.value=localStorage.getItem('authorityRole')

@@ -30,7 +30,7 @@
   <el-card v-loading="loading2" shadow="never" style="margin-left: 50px;margin-right: 50px;height: 60%;">
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
       <el-text size="large" type="primary">课程 {{form.lessonId}} 的 {{form.examName}} 考试已录入答题卡如下</el-text>
-      <el-button v-if="show" type="primary" style="margin-top: 10px;">进行答题卡切割</el-button>
+      <el-button v-if="show" type="primary" style="margin-top: 10px;" @click="doCut">进行答题卡切割</el-button>
     </div>
     <el-table
         :data="tableData"
@@ -62,10 +62,10 @@
 
 <script lang="ts" setup>
 import { Paperclip } from '@element-plus/icons-vue'
-import {onMounted, ref} from 'vue';
+import {ref, onMounted} from 'vue';
 import { upload } from "@/request/upload/upload";
-import {ElMessage} from "element-plus";
-import {queryByIdExam} from "@/request/answer/answer"
+import {ElMessage, TableColumnCtx} from "element-plus";
+import {queryByIdExam,cutting} from "@/request/answer/answer"
 
 interface Student{
   studentId:string,
@@ -78,6 +78,13 @@ interface ExamInfo{
   examName:string,
   examData:string,
   modelName:string,
+  paperClassId:string,
+}
+interface SpanMethodProps {
+  row: Student
+  column: TableColumnCtx<Student>
+  rowIndex: number
+  columnIndex: number
 }
 const show=ref(true);
 const loading2=ref(false);
@@ -91,8 +98,29 @@ const form = ref<ExamInfo>({
   examName:'',
   examData:'',
   modelName:'',
+  paperClassId:'',
 });
 
+// const objectSpanMethod = ({
+//                             row,
+//                             column,
+//                             rowIndex,
+//                             columnIndex,
+//                           }: SpanMethodProps) => {
+//   if (columnIndex === 0) {
+//     if (rowIndex % 2 === 0) {
+//       return {
+//         rowspan: 2,
+//         colspan: 1,
+//       }
+//     } else {
+//       return {
+//         rowspan: 0,
+//         colspan: 0,
+//       }
+//     }
+//   }
+// }
 const tableRowClassName = ({row, rowIndex}) => {
   if (row.paperUrl === '') {
     return 'warning-row';
@@ -100,6 +128,19 @@ const tableRowClassName = ({row, rowIndex}) => {
     return 'success-row';
   }
 };
+
+
+const doCut= async ()=>{
+  console.log(form.value);
+  const res=await cutting(form.value.paperClassId,form.value.examId);
+  console.log(res.data.data);
+  if(res.data.data){
+    ElMessage.success("切割完成，请前往批阅")
+  }else {
+    ElMessage.error("切割失败，稍后重试")
+  }
+}
+
 const select=async ()=>{
   fileInput.value.click();
 }
@@ -109,6 +150,7 @@ const getLocal=()=>{
   form.value.examName=localStorage.getItem('examName');
   form.value.examData=localStorage.getItem('examData');
   form.value.modelName=localStorage.getItem('modelName');
+  form.value.paperClassId=localStorage.getItem('paperClassId');
 }
 const handleFolderChange = () => {
   const files = fileInput.value?.files;
@@ -145,6 +187,7 @@ const uploadImages = async () => {
   const files = fileInput.value?.files;
   if (!files || files.length === 0) {
     console.error('请选择要上传的图片');
+    loading.value=false;
     return;
   }
 

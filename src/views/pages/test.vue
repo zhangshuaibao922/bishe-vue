@@ -11,44 +11,55 @@
     <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
       <el-table
           :data="tableData"
-          :span-method="objectSpanMethod"
           border
-          style="width: 100%;"
           height="700px"
+          style="width: 100%;"
       >
         <el-table-column label="课程编号" prop="lessonId" width="180"/>
         <el-table-column label="考试名称" prop="examName"/>
-        <el-table-column label="答题卡模版" prop="ModelName">
+        <el-table-column label="答题卡模版">
           <template #default="scope">
             <span v-if="scope.row.paperClassId!==''">{{ scope.row.modelName }}</span>
             <span v-else style="color:red;"> 暂无</span>
           </template>
         </el-table-column>
         <el-table-column label="考试日期" prop="examData"/>
-        <el-table-column label="操作">
+        <el-table-column label="考试状态">
+          <template #default="scope">
+            <el-text v-if="scope.row.isDelete!==1" type="primary" size="large">正常</el-text>
+            <el-text v-else type="danger" size="large">结束</el-text>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="300px">
           <template #default="scope">
             <div style="display: flex; justify-content: left;">
-            <el-button
-                v-if="scope.row.paperClassId===''"
-                size="small"
-                type="success"
-                @click="addTeacherToClass(scope.row)"
-                style="margin-right: 12px"
-            >模版设置
-            </el-button>
-            <el-button
-                v-else
-                size="small"
-                type="primary"
-                @click="toAnswer(scope.row)"
-            >录入答题卡
-            </el-button>
-            <el-button
-                size="small"
-                type="danger"
-                @click="deleteById(scope.row.id)"
-            >删除
-            </el-button>
+              <el-button
+                  v-if="scope.row.paperClassId===''"
+                  size="small"
+                  style="margin-right: 12px"
+                  type="success"
+                  @click="addTeacherToClass(scope.row)"
+              >模版设置
+              </el-button>
+              <el-button
+                  v-else
+                  size="small"
+                  type="primary"
+                  @click="toAnswer(scope.row)"
+              >录入答题卡
+              </el-button>
+              <el-button v-if="scope.row.paperClassId!==''"
+                         size="small"
+                         type="warning"
+                         @click="toChangeStatus(scope.row)"
+              >结束批阅
+              </el-button>
+              <el-button
+                  size="small"
+                  type="danger"
+                  @click="deleteById(scope.row.id)"
+              >删除考试
+              </el-button>
             </div>
           </template>
         </el-table-column>
@@ -156,8 +167,16 @@ import {ref, onMounted} from 'vue';
 import {ElMessage} from "element-plus";
 import type {TableColumnCtx} from 'element-plus'
 import {queryAllByTeacherId} from "@/request/class/class";
-import {addExam, queryAllByIdForModel, queryByExamClass, queryByExamName,insertTestModelDto,deleteTest} from "@/request/test/test"
+import {
+  addExam,
+  queryAllByIdForModel,
+  queryByExamClass,
+  queryByExamName,
+  insertTestModelDto,
+  deleteTest
+} from "@/request/test/test"
 import router from "@/router";
+import {updateExam} from "@/request/score/score";
 
 interface Exam {
   id: number,
@@ -169,6 +188,7 @@ interface Exam {
   paperClassId: string,
   modelName: string,
   examData: string,
+  isDelete: number,
 }
 
 interface ExamInfo {
@@ -196,30 +216,24 @@ interface LessonDtoInfo {
   lessonName: string
 }
 
-interface SpanMethodProps {
-  row: Exam
-  column: TableColumnCtx<Exam>
-  rowIndex: number
-  columnIndex: number
-}
 
-interface Model{
-  id:number,
+interface Model {
+  id: number,
   modelName: string,
   modelClass: string,
   paperClassId: string,
   modelNumber: string,
 }
 
-interface ModelInfo{
+interface ModelInfo {
   modelName: string,
   paperClassId: string,
 }
 
-interface modelToSet{
-  id:number,
-  teacherId:string,
-  paperClassId:string,
+interface modelToSet {
+  id: number,
+  teacherId: string,
+  paperClassId: string,
 }
 
 const centerDialogVisible1 = ref(false)
@@ -227,13 +241,13 @@ const centerDialogVisible = ref(false)
 const tableData = ref<Exam[]>([]);
 const lessonList = ref<LessonDto[]>([]);
 const options = ref<LessonDtoInfo[]>([]);
-const modelOptions=ref<ModelInfo[]>([]);
-const modelList=ref<Model[]>([]);
+const modelOptions = ref<ModelInfo[]>([]);
+const modelList = ref<Model[]>([]);
 const input = ref('');
-const form=ref<modelToSet>({
-  id:-1,
-  teacherId:localStorage.getItem('id'),
-  paperClassId:'',
+const form = ref<modelToSet>({
+  id: -1,
+  teacherId: localStorage.getItem('id'),
+  paperClassId: '',
 });
 const form1 = ref<ExamInfo>({
   examId: '',
@@ -245,54 +259,65 @@ const form1 = ref<ExamInfo>({
   examData: '',
 });
 
-const toAnswer=(data:Exam)=>{
-  localStorage.setItem('examLessonId',data.lessonId)
-  localStorage.setItem('examId',data.examId)
-  localStorage.setItem('examName',data.examName)
-  localStorage.setItem('examData',data.examData)
-  localStorage.setItem('modelName',data.modelName)
+const toChangeStatus= async (data:Exam)=>{
+  data.isDelete=1
+  const res=await updateExam(data);
+  if(res.data){
+    ElMessage.success("该考试已截止")
+    await getTest();
+  }
+}
+
+const toAnswer = (data: Exam) => {
+  localStorage.setItem('examLessonId', data.lessonId)
+  localStorage.setItem('examId', data.examId)
+  localStorage.setItem('examName', data.examName)
+  localStorage.setItem('examData', data.examData)
+  localStorage.setItem('modelName', data.modelName)
+  localStorage.setItem('paperClassId', data.paperClassId)
   router.push("answer")
 }
 
-const deleteById=async (id:number)=>{
-  const res=await deleteTest(id);
-  if(res.data.data){
+const deleteById = async (id: number) => {
+  const res = await deleteTest(id);
+  if (res.data.data) {
     ElMessage.success("删除成功");
-  }else {
+  } else {
     ElMessage.error("删除失败");
   }
   await getTest();
 }
 
-const addSetAndModel=async ()=>{
-  const res=await insertTestModelDto(form.value);
-  if(res.data.data){
+const addSetAndModel = async () => {
+  const res = await insertTestModelDto(form.value);
+  if (res.data.data) {
     ElMessage.success("设置成功");
     await getTest();
-    centerDialogVisible.value=false;
-    form.value.id=-1;
-  }else {
+    centerDialogVisible.value = false;
+    form.value.id = -1;
+  } else {
     ElMessage.error("设置失败");
-    centerDialogVisible.value=false;
-    form.value.id=-1;
+    centerDialogVisible.value = false;
+    form.value.id = -1;
   }
 }
 
-const addTeacherToClass=(data:Exam)=>{
-  form.value.id=data.id;
-  centerDialogVisible.value=true;
+const addTeacherToClass = (data: Exam) => {
+  form.value.id = data.id;
+  centerDialogVisible.value = true;
 }
-const cancelSet=()=>{
-  centerDialogVisible.value=false;
-  form.value.id=-1;
+const cancelSet = () => {
+  centerDialogVisible.value = false;
+  form.value.id = -1;
 }
 const selectTest = async () => {
   if (input.value == null || input.value.length == 0) {
+    ElMessage.success("查询成功");
     await getTest();
   } else {
     const res = await queryByExamName(input.value);
     console.log(res.data.data)
-    if (res.data.data===null) {
+    if (res.data.data === null) {
       ElMessage.error("考试不存在")
     } else {
       ElMessage.success("查询成功");
@@ -305,9 +330,9 @@ const addTest = () => {
   centerDialogVisible1.value = true;
 }
 const add = async () => {
-  if (form1.value.lessonId===''||form1.value.examName===''||form1.value.examData===''){
+  if (form1.value.lessonId === '' || form1.value.examName === '' || form1.value.examData === '') {
     ElMessage.error("请填写相关信息")
-  }else {
+  } else {
     console.log(form1.value)
     const res = await addExam(form1.value);
     if (res.data) {
@@ -317,32 +342,12 @@ const add = async () => {
     } else {
       ElMessage.error("添加失败")
     }
-    form1.value.lessonId='';
-    form1.value.examName='';
-    form1.value.examData='';
+    form1.value.lessonId = '';
+    form1.value.examName = '';
+    form1.value.examData = '';
   }
 }
 
-const objectSpanMethod = ({
-                            row,
-                            column,
-                            rowIndex,
-                            columnIndex,
-                          }: SpanMethodProps) => {
-  if (columnIndex === 0) {
-    if (rowIndex % 2 === 0) {
-      return {
-        rowspan: 2,
-        colspan: 1,
-      }
-    } else {
-      return {
-        rowspan: 0,
-        colspan: 0,
-      }
-    }
-  }
-}
 // 模拟后端返回的数据
 const getLesson = () => {
   queryAllByTeacherId(localStorage.getItem('id')).then((res) => {
@@ -356,15 +361,18 @@ const getLesson = () => {
   })
 };
 const getTest = () => {
-  queryByExamClass("1").then((res) => {
+  queryByExamClass("1", localStorage.getItem('id')).then((res) => {
     tableData.value = res.data.data;
+    if (res.data.code === 200) {
+      ElMessage.success("查询成功")
+    }
   }).catch((error) => {
     console.error("出现错误", error);
   })
 }
-const getTestModel=()=>{
+const getTestModel = () => {
   queryAllByIdForModel("1").then((res) => {
-    modelList.value=res.data.data;
+    modelList.value = res.data.data;
     for (let i = 0; i < modelList.value.length; i++) {
       modelOptions.value.push({modelName: modelList.value[i].modelName, paperClassId: modelList.value[i].paperClassId})
     }

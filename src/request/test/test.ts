@@ -14,6 +14,12 @@ interface modelToSet{
     teacherId:string,
     paperClassId:string,
 }
+interface ModelToSetExam {
+    id:number,
+    teacherId: string,
+    paperClassId: string,
+    data: any[][],
+}
 
 export function addExam(data:ExamInfo){
     return service({
@@ -23,9 +29,15 @@ export function addExam(data:ExamInfo){
     })
 }
 
-export function queryByExamClass(examClass:string){
+export function queryByExamClass(examClass:string,teacherId:string){
     return service({
-        url:'/exam/all/'+examClass,
+        url:'/exam/all/'+examClass+"/"+teacherId,
+        method:'get',
+    })
+}
+export function scoreQueryByExamClass(examClass:string){
+    return service({
+        url:'/exam/all/score/'+examClass,
         method:'get',
     })
 }
@@ -56,5 +68,20 @@ export function insertTestModelDto(data:modelToSet){
         url:'/model/test',
         method:'post',
         data,
+    })
+}
+export function insertExamModelDto(data:ModelToSetExam){
+    return service({
+        url:'/model/exam',
+        method:'post',
+        data,
+    })
+}
+
+
+export function queryTeacher(){
+    return service({
+        url:'/teacher/all',
+        method:'get',
     })
 }

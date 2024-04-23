@@ -56,6 +56,21 @@ const router = createRouter({
                     path: '/exam',
                     name: 'exam',
                     component: () => import('../views/pages/exam.vue')
+                },
+                {
+                    path: '/score',
+                    name: 'score',
+                    component: () => import('../views/pages/score.vue')
+                },
+                {
+                    path: '/setScore',
+                    name: 'setScore',
+                    component: () => import('../views/pages/setScore.vue')
+                },
+                {
+                    path: '/getScore',
+                    name: 'getScore',
+                    component: () => import('../views/pages/getScore.vue')
                 }
             ]
         },
