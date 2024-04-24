@@ -73,3 +73,10 @@ export function updateExam(data:Exam){
         data,
     })
 }
+
+export function queryDesById(examSet:string,answerId:string){
+    return service({
+        url:'/setting/desById/'+examSet+"/"+answerId,
+        method:'get',
+    })
+}

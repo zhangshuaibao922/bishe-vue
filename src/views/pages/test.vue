@@ -19,8 +19,18 @@
         <el-table-column label="考试名称" prop="examName"/>
         <el-table-column label="答题卡模版">
           <template #default="scope">
-            <span v-if="scope.row.paperClassId!==''">{{ scope.row.modelName }}</span>
-            <span v-else style="color:red;"> 暂无</span>
+            <el-popover effect="light" trigger="hover" placement="top" width="auto">
+              <template #default>
+
+                  <div v-for="item in scope.row.models" style="display: block;">
+                    <el-text  size="large" type="primary">{{item.url}}</el-text>
+                  </div>
+              </template>
+              <template #reference>
+                <el-text v-if="scope.row.paperClassId!==''"  size="large">{{scope.row.modelName}}</el-text>
+                <el-text v-else  size="large" type="danger">暂无</el-text>
+              </template>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column label="考试日期" prop="examData"/>
@@ -30,7 +40,7 @@
             <el-text v-else type="danger" size="large">结束</el-text>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="300px">
+        <el-table-column label="操作" width="360px">
           <template #default="scope">
             <div style="display: flex; justify-content: left;">
               <el-button
@@ -47,6 +57,12 @@
                   type="primary"
                   @click="toAnswer(scope.row)"
               >录入答题卡
+              </el-button>
+              <el-button v-if="scope.row.paperClassId!==''"
+                         size="small"
+                         type="info"
+                         @click="toChangeSettingDescription(scope.row)"
+              >答案备注
               </el-button>
               <el-button v-if="scope.row.paperClassId!==''"
                          size="small"
@@ -158,6 +174,29 @@
         </template>
       </el-dialog>
 
+      <el-dialog
+          v-model="centerDialogVisible2"
+          align-center
+          title="答案备注"
+          width="500"
+      >
+        <div v-for="item in desList"  class="m-4">
+          <div style="margin-left: 55px">
+            <el-text type="primary" size="large" >第{{item.answerId}}题</el-text>
+              <el-input  v-model="item.description" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }" style="width: 240px;margin-top: 10px;margin-left: 10px" placeholder="暂无备注，请输入" />
+          </div>
+        </div>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="centerDialogVisible2 = false">
+              取消
+            </el-button>
+            <el-button type="primary" @click="changeDes">
+              确定
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
 
     </el-card>
   </div>
@@ -173,7 +212,7 @@ import {
   queryByExamClass,
   queryByExamName,
   insertTestModelDto,
-  deleteTest
+  deleteTest, queryDes, editDes
 } from "@/request/test/test"
 import router from "@/router";
 import {updateExam} from "@/request/score/score";
@@ -189,8 +228,12 @@ interface Exam {
   modelName: string,
   examData: string,
   isDelete: number,
+  models:Modelurl[],
 }
-
+interface Modelurl{
+  paperClassId: string,
+  url: number,
+}
 interface ExamInfo {
   examId: string,
   lessonId: string,
@@ -200,7 +243,11 @@ interface ExamInfo {
   paperClassId: string,
   examData: string,
 }
-
+interface SettingDesDto{
+  examSet: string,
+  answerId: string,
+  description: string,
+}
 interface LessonDto {
   id: string
   lessonId: string
@@ -210,13 +257,10 @@ interface LessonDto {
   teacherId: string
   teacherName: string
 }
-
 interface LessonDtoInfo {
   lessonId: string
   lessonName: string
 }
-
-
 interface Model {
   id: number,
   modelName: string,
@@ -224,20 +268,20 @@ interface Model {
   paperClassId: string,
   modelNumber: string,
 }
-
 interface ModelInfo {
   modelName: string,
   paperClassId: string,
 }
-
 interface modelToSet {
   id: number,
   teacherId: string,
   paperClassId: string,
 }
 
+const desList=ref<SettingDesDto[]>([]);
 const centerDialogVisible1 = ref(false)
 const centerDialogVisible = ref(false)
+const centerDialogVisible2 = ref(false)
 const tableData = ref<Exam[]>([]);
 const lessonList = ref<LessonDto[]>([]);
 const options = ref<LessonDtoInfo[]>([]);
@@ -259,6 +303,23 @@ const form1 = ref<ExamInfo>({
   examData: '',
 });
 
+const changeDes=async ()=>{
+  console.log(desList.value)
+  const res=await editDes(desList.value);
+  if(res.data.data){
+    ElMessage.success("答案备注设置成功")
+    centerDialogVisible2.value=false;
+  }else {
+    ElMessage.error("答案备注设置失败")
+  }
+}
+
+const toChangeSettingDescription= async (data:Exam)=>{
+  const res=await queryDes(data.examSet,localStorage.getItem('id'));
+  desList.value=res.data.data;
+  centerDialogVisible2.value=true;
+  console.log(desList.value)
+}
 const toChangeStatus= async (data:Exam)=>{
   data.isDelete=1
   const res=await updateExam(data);
@@ -267,7 +328,6 @@ const toChangeStatus= async (data:Exam)=>{
     await getTest();
   }
 }
-
 const toAnswer = (data: Exam) => {
   localStorage.setItem('examLessonId', data.lessonId)
   localStorage.setItem('examId', data.examId)
@@ -277,7 +337,6 @@ const toAnswer = (data: Exam) => {
   localStorage.setItem('paperClassId', data.paperClassId)
   router.push("answer")
 }
-
 const deleteById = async (id: number) => {
   const res = await deleteTest(id);
   if (res.data.data) {
@@ -287,7 +346,6 @@ const deleteById = async (id: number) => {
   }
   await getTest();
 }
-
 const addSetAndModel = async () => {
   const res = await insertTestModelDto(form.value);
   if (res.data.data) {
@@ -301,7 +359,6 @@ const addSetAndModel = async () => {
     form.value.id = -1;
   }
 }
-
 const addTeacherToClass = (data: Exam) => {
   form.value.id = data.id;
   centerDialogVisible.value = true;
@@ -347,7 +404,6 @@ const add = async () => {
     form1.value.examData = '';
   }
 }
-
 // 模拟后端返回的数据
 const getLesson = () => {
   queryAllByTeacherId(localStorage.getItem('id')).then((res) => {

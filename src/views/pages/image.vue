@@ -191,8 +191,8 @@ const init = () => {
       locale: locale_zh,
       theme: customTheme
     },
-    cssMaxWidth: 900,
-    cssMaxHeight: 900
+    cssMaxWidth: 500,
+    cssMaxHeight: 700,
   });
 
   document.getElementsByClassName('tui-image-editor-main')[0].style.top = 0

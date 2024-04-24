@@ -1,13 +1,21 @@
 User
 <template>
   <div style="width: 100%;height: 100%;display: flex;">
-    <el-card shadow="never" style="margin-left: 100px; width: 900px; height: 100%;
+    <el-card style="height: 100%;width: 300px">
+      <el-card style="height: 100%;width: 250px">
+        <div style="display: block;">
+          <el-text size="large" type="primary">答案备注</el-text>
+        </div>
+        <el-text size="large" >{{settingInfo.description}}</el-text>
+      </el-card>
+    </el-card>
+    <el-card shadow="never" style="width: 600px; height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;">
-      <EditImage ref="childRef" class="childRef" style="width: 800px;height: 1000px"  :imagePath="url"></EditImage>
+      <EditImage ref="childRef" class="childRef" style="width: 600px;height: 1000px"  :imagePath="url"></EditImage>
     </el-card>
-    <el-card shadow="never" style="margin-left: 10px;height: 90%;width: 400px">
+    <el-card shadow="never" style="margin-left: 10px;height: 100%;width: 300px">
       <div style="height: 610px; overflow-y: auto;">
         <el-text size="large" type="primary">得分</el-text>
         <el-input-number
@@ -25,9 +33,8 @@ User
         </div>
       </div>
       <div style="flex: 1;width: 100%;height: 90px">
-        <el-button size="large" style="margin-left: 70px;margin-top: 50px" type="primary" @click="changeSave" round>标记报错</el-button>
-        <el-button v-if="shunXu>=1" size="large" style="margin-left: 70px;margin-top: 50px" type="primary" @click="toGoBack" round>上一份</el-button>
-
+        <el-button size="large" style="margin-top: 20px" type="primary" @click="changeSave" round>标记保存</el-button>
+        <el-button v-if="shunXu>=1" size="large" style="margin-left: 50px;margin-top: 20px" type="primary" @click="toGoBack" round>上一份</el-button>
       </div>
     </el-card>
   </div>
@@ -35,7 +42,7 @@ User
 
 <script>
 import { ref } from 'vue';
-import { queryByExamIdAndTeacherId, edit } from '@/request/score/score';
+import { queryByExamIdAndTeacherId, edit ,queryDesById} from '@/request/score/score';
 import { ElMessage } from 'element-plus';
 import router from '@/router';
 import EditImage from "@/views/pages/image.vue";
@@ -43,6 +50,11 @@ import EditImage from "@/views/pages/image.vue";
 export default {
   components: { EditImage: EditImage },
   setup() {
+    const settingInfo=ref({
+      examSet: localStorage.getItem("examSet"),
+      answerId: localStorage.getItem('answerId'),
+      description: '',
+    });
     // 使用 ref 创建响应式数据
     const formData = ref([]);
     const count = ref(null);
@@ -50,6 +62,7 @@ export default {
     const shunXu = ref(0);
     const url = ref('');
     const buttons = ref([]);
+
     const data = ref({
       paperId: '',
       answerId: '',
@@ -113,6 +126,13 @@ export default {
     // 调用获取数据的方法
     getDate();
 
+    const getDes=async ()=>{
+      const res=await queryDesById(settingInfo.value.examSet,settingInfo.value.answerId);
+      settingInfo.value.description=res.data.data.description;
+      console.log("备注")
+      console.log(settingInfo.value.description)
+    }
+    getDes();
     // 定义其他方法
     const toGoBack = () => {
       shunXu.value--;
@@ -138,8 +158,8 @@ export default {
       }
     };
 
-    const handleChange = () => {
-      console.log(num.value);
+    const handleChange = async () => {
+      await toScore(num.value);
     };
 
     const childRef=ref(null);
@@ -150,6 +170,7 @@ export default {
     }
 
     return {
+      settingInfo,
       formData,
       count,
       num,

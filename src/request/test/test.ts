@@ -20,7 +20,11 @@ interface ModelToSetExam {
     paperClassId: string,
     data: any[][],
 }
-
+interface SettingDesDto{
+    examSet: string,
+    answerId: string,
+    description: string,
+}
 export function addExam(data:ExamInfo){
     return service({
         url:'/exam',
@@ -83,5 +87,21 @@ export function queryTeacher(){
     return service({
         url:'/teacher/all',
         method:'get',
+    })
+}
+
+
+export function queryDes(examSet:string,teacherId:string){
+    return service({
+        url:'/setting/des/'+examSet+"/"+teacherId,
+        method:'get',
+    })
+}
+
+export function editDes(data:SettingDesDto[]){
+    return service({
+        url:'/setting/des',
+        method:'put',
+        data,
     })
 }

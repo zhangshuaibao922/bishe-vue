@@ -131,6 +131,8 @@ const tableRowClassName = ({row, rowIndex}) => {
 
 
 const doCut= async ()=>{
+  loading.value=true;
+  loading2.value=true;
   console.log(form.value);
   const res=await cutting(form.value.paperClassId,form.value.examId);
   console.log(res.data.data);
@@ -139,6 +141,8 @@ const doCut= async ()=>{
   }else {
     ElMessage.error("切割失败，稍后重试")
   }
+  loading.value=false;
+  loading2.value=false;
 }
 
 const select=async ()=>{
