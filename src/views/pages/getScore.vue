@@ -1,12 +1,11 @@
+User
 <template>
   <div style="width: 100%;height: 100%;display: flex;">
-    <el-card shadow="never" style="margin-left: 100px; width: 900px; height: 800px;
+    <el-card shadow="never" style="margin-left: 100px; width: 900px; height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;">
-      <img :src="url" @click="previewImg(url)" style="
-      max-width: 100%;
-      max-height: 700px;">
+      <EditImage ref="childRef" class="childRef" style="width: 800px;height: 1000px"  :imagePath="url"></EditImage>
     </el-card>
     <el-card shadow="never" style="margin-left: 10px;height: 90%;width: 400px">
       <div style="height: 610px; overflow-y: auto;">
@@ -22,94 +21,68 @@
         <div style="display: flex; flex-wrap: wrap;">
           <el-button style="flex: 0 0 calc(50% - 20px); margin: 10px;" v-for="(button, index) in buttons" :key="index" :type="button.type" @click="toScore(button.score)" >
             <span style="color: orangered;font-size: large">{{ button.text }}</span>
-            </el-button>
+          </el-button>
         </div>
       </div>
       <div style="flex: 1;width: 100%;height: 90px">
+        <el-button size="large" style="margin-left: 70px;margin-top: 50px" type="primary" @click="changeSave" round>标记报错</el-button>
         <el-button v-if="shunXu>=1" size="large" style="margin-left: 70px;margin-top: 50px" type="primary" @click="toGoBack" round>上一份</el-button>
-        <el-button size="large" style="margin-left: 70px;margin-top: 50px"type="primary"  round>批  注</el-button>
+
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import { queryByExamIdAndTeacherId, edit, editSetting } from '@/request/score/score';
+import { ref } from 'vue';
+import { queryByExamIdAndTeacherId, edit } from '@/request/score/score';
 import { ElMessage } from 'element-plus';
 import router from '@/router';
+import EditImage from "@/views/pages/image.vue";
 
 export default {
-  data() {
-    return {
-      formData: [],
-      count: null,
-      num: 0,
-      shunXu: 0,
-      url: '',
-      buttons: [],
-      data: {
-        paperId: '',
-        answerId: '',
-        num: parseInt(localStorage.getItem('num')),
-        answerScore: this.num,
-        teacherId: '',
-      },
-    };
-  },
-  methods: {
-    previewImg(url) {
-      this.$hevueImgPreview(url)
-    },
-    toGoBack() {
-      this.shunXu--;
-      this.url = this.formData[this.shunXu].answerUrl;
-    },
-    async toScore(answerScore) {
-      this.data.paperId = this.formData[this.shunXu].paperId;
-      this.data.answerId = this.formData[this.shunXu].answerId;
-      this.data.teacherId = localStorage.getItem('id');
-      this.data.answerScore = answerScore;
-      const res = await edit(this.data);
-      if (res.data.data) {
-        ElMessage.success('批改完成');
-      }
-      if (this.shunXu + 1 === this.formData.length) {
-        this.shunXu = 0;
-        this.buttons = [];
-        await this.getDate();
-      } else if (this.shunXu + 1 < this.formData.length) {
-        this.shunXu++;
-        this.url = this.formData[this.shunXu].answerUrl;
-      }
-    },
-    handleChange() {
-      console.log(this.num);
-    },
-    getDate() {
-      queryByExamIdAndTeacherId(localStorage.getItem('examId'), localStorage.getItem('answerId'),localStorage.getItem('teacherId'))
+  components: { EditImage: EditImage },
+  setup() {
+    // 使用 ref 创建响应式数据
+    const formData = ref([]);
+    const count = ref(null);
+    const num = ref(0);
+    const shunXu = ref(0);
+    const url = ref('');
+    const buttons = ref([]);
+    const data = ref({
+      paperId: '',
+      answerId: '',
+      num: parseInt(localStorage.getItem('num')),
+      answerScore: num.value,
+      teacherId: '',
+    });
+
+    // 定义获取数据的方法
+    const getDate = () => {
+      queryByExamIdAndTeacherId(localStorage.getItem('examId'), localStorage.getItem('answerId'), localStorage.getItem('teacherId'))
           .then((res) => {
-            this.formData = res.data.data;
-            if (res.data.code===200) {
-              if(res.data.data.length>0){
+            formData.value = res.data.data;
+            if (res.data.code === 200) {
+              if (res.data.data.length > 0) {
                 ElMessage.success('查询成功');
-                this.url = this.formData[this.shunXu].answerUrl;
+                url.value = formData.value[shunXu.value].answerUrl;
               }
             } else if (res.data.code === 250) {
               ElMessage.success('已经批改完成');
               router.push('setScore');
             }
-            this.count = parseInt(localStorage.getItem('count'));
-            for (let i = 0; i <= this.count; i++) {
-              if (this.count <= 20) {
+            count.value = parseInt(localStorage.getItem('count'));
+            for (let i = 0; i <= count.value; i++) {
+              if (count.value <= 20) {
                 if (i === 0) {
-                  this.buttons.push({
+                  buttons.value.push({
                     text: String(i),
                     type: 'warning',
                     score: i,
                   });
                 } else {
-                  this.buttons.push({
+                  buttons.value.push({
                     text: String(i),
                     type: '',
                     score: i,
@@ -117,13 +90,13 @@ export default {
                 }
               } else {
                 if (i === 0) {
-                  this.buttons.push({
+                  buttons.value.push({
                     text: String(i),
                     type: 'warning',
                     score: i,
                   });
                 } else if (i % 5 === 0) {
-                  this.buttons.push({
+                  buttons.value.push({
                     text: String(i),
                     type: '',
                     score: i,
@@ -135,14 +108,64 @@ export default {
           .catch((error) => {
             console.error('出现错误', error);
           });
-    },
-  },
-  async mounted() {
-    await this.getDate();
+    };
+
+    // 调用获取数据的方法
+    getDate();
+
+    // 定义其他方法
+    const toGoBack = () => {
+      shunXu.value--;
+      url.value = formData.value[shunXu.value].answerUrl;
+    };
+
+    const toScore = async (answerScore) => {
+      data.value.paperId = formData.value[shunXu.value].paperId;
+      data.value.answerId = formData.value[shunXu.value].answerId;
+      data.value.teacherId = localStorage.getItem('id');
+      data.value.answerScore = answerScore;
+      const res = await edit(data.value);
+      if (res.data.data) {
+        ElMessage.success('批改完成');
+      }
+      if (shunXu.value + 1 === formData.value.length) {
+        shunXu.value = 0;
+        buttons.value = [];
+        await getDate();
+      } else if (shunXu.value + 1 < formData.value.length) {
+        shunXu.value++;
+        url.value = formData.value[shunXu.value].answerUrl;
+      }
+    };
+
+    const handleChange = () => {
+      console.log(num.value);
+    };
+
+    const childRef=ref(null);
+    const changeSave=()=>{
+      const res=childRef.value.save();
+      console.log(res)
+      console.log("res")
+    }
+
+    return {
+      formData,
+      count,
+      num,
+      shunXu,
+      url,
+      buttons,
+      childRef,
+      toGoBack,
+      toScore,
+      handleChange,
+      changeSave,
+    };
   },
 };
-
 </script>
+
 
 <style scoped>
 

@@ -16,6 +16,7 @@
     "element-plus": "^2.6.2",
     "hevue-img-preview": "^6.1.0",
     "pinia": "^2.1.7",
+    "tui-image-editor": "^3.15.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
