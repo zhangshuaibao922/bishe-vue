@@ -45,7 +45,7 @@ import type {FormInstance, FormRules} from 'element-plus';
 import {login} from "@/request/login/login";
 import {useRouter} from "vue-router";
 import {ElMessage} from 'element-plus';
-
+import {useStudentStore} from '@/stores/counter'
 interface loginData {
   identity: string,
   username: string,
@@ -73,6 +73,7 @@ const options = [
   },
 ]
 const ruleFormRef = ref<FormInstance>()
+const studentStore = useStudentStore()
 const router = useRouter()
 const ruleForm: loginData = reactive({
   identity: "",
@@ -101,6 +102,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         if (Object.keys(user).length == 0) {
           ElMessage.error("登陆失败，请检查账号密码")
         } else {
+          studentStore.setUserInfo(user);
           ElMessage.success("登录成功")
           localStorage.setItem('name', user.name)
           localStorage.setItem('id',ruleForm.username)

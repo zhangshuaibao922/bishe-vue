@@ -46,7 +46,7 @@
             <el-icon  size="30px"><setting /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">权限分配</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7">
+          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="7" @click="toWelcome">
             <el-icon size="30px"><User /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">用户信息</span></template>
           </el-menu-item>
@@ -119,6 +119,10 @@ const toScore=()=>{
 const toSeeScore=()=>{
   mark.value="成绩统计"
   router.push('seeScore');
+}
+const toWelcome=()=>{
+  mark.value="用户信息"
+  router.push('welcome');
 }
 onMounted(async () => {
   role.value=localStorage.getItem('authorityRole')

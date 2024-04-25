@@ -2,100 +2,50 @@
   <div style="width: 100%;height: 100%;">
     <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
       <el-input v-model="input" style="width: 400px;margin-left: 20%"
-                placeholder="请输入教师名称" size="large"/>
-      <el-button type="primary" @click="selectLesson" size="large" style="">查询教师
-      </el-button>
-
-      <el-button type="success" round @click="addTeacher" size="large" style="margin-left: 100px">新增教师
+                placeholder="请输入教师ID" size="large"/>
+      <el-button type="primary" @click="selectTeacher" size="large" style="">查询教师
       </el-button>
     </el-card>
     <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column label="教师ID" width="400">
+        <el-table-column label="教师ID">
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <el-icon><Collection /></el-icon>
-              <span style="margin-left: 10px">{{ scope.row.lessonId }}</span>
+              <span style="margin-left: 10px">{{ scope.row.teacherId }}</span>
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="教师名称">
+          <template #default="scope">
+            <el-text size="large">{{scope.row.teacherName}}</el-text>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态">
+          <template #default="scope">
+              <el-text v-if="scope.row.status==='1'" type="primary" size="large">正常</el-text>
+              <el-text v-else type="primary" size="large">注销</el-text>
           </template>
         </el-table-column>
         <el-table-column label="教师名称" width="300">
           <template #default="scope">
-            <el-popover effect="light" trigger="hover" placement="top" width="auto">
-              <template #default>
-                <div>权限: {{ scope.row.hours }}</div>
-              </template>
-              <template #reference>
-                <el-tag>{{ scope.row.lessonName }}</el-tag>
-              </template>
-            </el-popover>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button size="small" @click="updateLesson(scope.row)">
-              修改
-            </el-button>
-            <el-button
-                size="small"
-                type="danger"
-                @click="deleteLesson(scope.row.id)">
-              删除
-            </el-button>
+            <el-select
+                v-model="scope.row.authorityId"
+                placeholder="Select"
+                size="large"
+                style="width: 240px"
+                @change="changeTeacher(scope.row)"
+            >
+              <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              />
+            </el-select>
           </template>
         </el-table-column>
       </el-table>
-
-      <el-dialog
-          v-model="centerDialogVisible"
-          title="修改教师"
-          width="500"
-          align-center
-      >
-        <el-form :model="form" label-width="100px">
-          <el-form-item label="教师ID">
-            <el-input v-model="form.lessonId"></el-input>
-          </el-form-item>
-          <el-form-item label="教师名字">
-            <el-input v-model="form.lessonName"></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">
-              取消
-            </el-button>
-            <el-button type="primary" @click="change(form)">
-              确定
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-      <el-dialog
-          v-model="centerDialogVisible1"
-          title="新增教师"
-          width="500"
-          align-center
-      >
-        <el-form :model="form1" label-width="100px">
-          <el-form-item label="教师ID">
-            <el-input v-model="form1.lessonId"></el-input>
-          </el-form-item>
-          <el-form-item label="教师名字">
-            <el-input v-model="form1.lessonName"></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="centerDialogVisible1 = false">
-              取消
-            </el-button>
-            <el-button type="primary" @click="add(form1)">
-              确定
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
 
     </el-card>
   </div>
@@ -104,96 +54,73 @@
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue';
 import { Collection } from '@element-plus/icons-vue'
-import {queryAll, update,addByInfo,deleteById,queryById} from "@/request/class/class";
+import {
+  queryAll,
+  update,
+  addByInfo,
+  deleteById,
+  queryById,
+  queryAllTeacher,
+  updateTeacher, queryTeachers
+} from "@/request/class/class";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
-interface Lesson {
-  id: string
-  lessonId: string
-  lessonName: string
-  hours: string
-  score: string
+interface Teacher {
+  id: number
+  collegeId: string
+  teacherId: string
+  teacherName: string
+  teacherPassword: string
+  idCardNo: string
+  mobilePhone: string
+  authorityId: string
+  status: string
+  description: string
 }
-interface LessonInfo {
-  lessonId: string
-  lessonName: string
-  hours: string
-  score: string
-}
-const form = ref<Lesson>({
-  id: '-1',
-  lessonId: '',
-  lessonName: '',
-  hours: '',
-  score: '',
-});
-const form1 = ref<LessonInfo>({
-  lessonId: '',
-  lessonName: '',
-  hours: '',
-  score: ''
-});
-const centerDialogVisible = ref(false)
-const centerDialogVisible1 = ref(false)
+const options = [
+  {
+    value: '1',
+    label: '管理员',
+  },
+  {
+    value: '2',
+    label: '教务主任',
+  },
+  {
+    value: '3',
+    label: '教师',
+  },
+  {
+    value: '4',
+    label: '学生',
+  },
+]
+
 const input = ref<string>('')
-
-const selectStudent=(lessonId:string)=>{
-  localStorage.setItem('lessonId', lessonId)
-  router.push("student")
-}
-
-const selectLesson=async ()=>{
-  if(input.value==null||input.value.length==0){
+const tableData= ref<Teacher[]>([]);
+const changeTeacher=async (data:Teacher)=>{
+  const res=await updateTeacher(data);
+  if(res.data){
+    ElMessage.success("修改成功")
     await fetchData();
   }else {
-    const res=await queryById(input.value);
-    if(res.data.length==0) {
-      ElMessage.error("课程不存在")
-    }else {
-      ElMessage.success("查询成功");
-      tableData.value = res.data
-      console.log(res.data)
-    }
-    input.value='';
+    ElMessage.error("修改失败")
   }
 }
-
-const deleteLesson=async (id:string)=>{
-  console.log(id)
-  const res =await deleteById(id);
-  console.log(res.data);
-  if (res.data) {
-    ElMessage.success("删除成功");
-    await fetchData();
-  } else {
-    ElMessage.error("删除失败");
+const selectTeacher=async ()=>{
+  const res=await queryTeachers(input.value);
+  input.value='';
+  if(res.data.status===200){
+    tableData.value=res.data.data;
+    ElMessage.success("查询成功")
+  }else {
+    ElMessage.error("查询失败")
   }
 }
-
-const addTeacher=()=>{
-  centerDialogVisible1.value=true;
-}
-const add= async (data:LessonInfo)=>{
-  const res=await addByInfo(data);
-  console.log(res.data);
-  if (res.data) {
-    ElMessage.success("新增成功");
-    centerDialogVisible1.value = false;
-    form1.value.lessonId='';
-    form1.value.lessonName='';
-    form1.value.hours='';
-    form1.value.score='';
-    await fetchData();
-  } else {
-    ElMessage.error("新增失败");
-    centerDialogVisible1.value = false;
-  }
-}
-const tableData= ref<Lesson[]>([]);
 // 模拟后端返回的数据
 const fetchData = () => {
-  queryAll().then((res) => {
+  queryAllTeacher().then((res) => {
         console.log(res.data.data)
         tableData.value = res.data.data;
       }
@@ -201,27 +128,6 @@ const fetchData = () => {
     console.error("出现错误", error);
   })
 };
-const updateLesson=(data:Lesson)=>{
-  centerDialogVisible.value=true;
-  form.value.id=data.id
-  form.value.lessonId=data.lessonId
-  form.value.lessonName=data.lessonName
-  form.value.hours=data.hours
-  form.value.score=data.score
-}
-
-const change= async (data:Lesson)=>{
-  const res=await update(data);
-  console.log(res.data);
-  if (res.data) {
-    ElMessage.success("修改成功");
-    centerDialogVisible.value = false;
-    await fetchData();
-  } else {
-    ElMessage.error("修改失败");
-    centerDialogVisible.value = false;
-  }
-}
 
 onMounted(async () => {
   await fetchData();

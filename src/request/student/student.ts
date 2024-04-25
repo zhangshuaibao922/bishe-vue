@@ -49,3 +49,10 @@ export function deleteById(studentId:string){
         method:'delete',
     })
 }
+
+export function getInfo(studentId:string){
+    return service({
+        url:'/student/getInfo/'+studentId,
+        method:'get',
+    })
+}

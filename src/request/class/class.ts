@@ -13,6 +13,18 @@ interface LessonInfo {
     hours: string
     score: string
 }
+interface Teacher {
+    id: number
+    collegeId: string
+    teacherId: string
+    teacherName: string
+    teacherPassword: string
+    idCardNo: string
+    mobilePhone: string
+    authorityId: string
+    status: string
+    description: string
+}
 interface Instruct {
     lessonId: string
     teacherId: string
@@ -20,6 +32,25 @@ interface Instruct {
 export function queryAll(){
     return service({
         url:'/lesson/all',
+        method:'get',
+    })
+}
+export function queryAllTeacher(){
+    return service({
+        url:'/teacher/all',
+        method:'get',
+    })
+}
+export function updateTeacher(data:Teacher){
+    return service({
+        url:'/teacher',
+        method:'put',
+        data,
+    })
+}
+export function queryTeachers(teacherName:string){
+    return service({
+        url:'/teacher/select/'+teacherName,
         method:'get',
     })
 }
