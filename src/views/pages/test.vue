@@ -23,7 +23,7 @@
               <template #default>
 
                   <div v-for="item in scope.row.models" style="display: block;">
-                    <el-text  size="large" type="primary">{{item.url}}</el-text>
+                    <el-link size="large" type="success">{{item.url}}</el-link>
                   </div>
               </template>
               <template #reference>

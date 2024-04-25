@@ -44,11 +44,20 @@
 </template>
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue';
+import {useStudentStore} from '@/stores/counter'
 import {ElMessage} from "element-plus";
-import {queryByExamClass, scoreQueryByExamClass} from "@/request/test/test"
-import {querySeeScore, updateExam} from "@/request/score/score"
+import {querySeeScore, queryAllScore} from "@/request/score/score"
 import router from "@/router";
-
+interface StudentScoreDto{
+  studentId: string,
+  studentName: string,
+  examId: string,
+  totalScore: string,
+}
+interface Modelurl{
+  paperClassId: string,
+  url: number,
+}
 interface Exam {
   id: number,
   examId: string,
@@ -60,23 +69,33 @@ interface Exam {
   modelName: string,
   examData: string,
   isDelete: number,
+  models:Modelurl[],
 }
-
 const loading=ref(true)
 const examClass=ref('1')
 const tableData = ref<Exam[]>([]);
+const studentStore = useStudentStore();
+const studentId=ref('');
 
-
-
-const toSetScore=(data:Exam)=>{
-  localStorage.setItem('examId',data.examId);
-  router.push("setScore");
+const toSetScore=async (data:Exam)=>{
+  studentId.value='1';
+  if(localStorage.getItem('authorityRole')==='STUDENT'){
+    studentId.value=localStorage.getItem('id');
+  }
+  const res=await queryAllScore(
+    data.examId,
+    data.lessonId,
+      studentId.value,
+  );
+  studentId.value='';
+  studentStore.setStudentScoreList(res.data.data);
+  router.push("studentScore");
 }
+
 const toSelectExam = async () => {
   console.log(examClass.value);
   await getTest();
 }
-
 // 模拟后端返回的数据
 const getTest = () => {
   querySeeScore(examClass.value, localStorage.getItem('id')).then((res) => {
@@ -89,7 +108,6 @@ const getTest = () => {
   })
   loading.value=false
 }
-
 onMounted(async () => {
   await getTest();
 });

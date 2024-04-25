@@ -29,6 +29,13 @@ interface Setting {
     count: number,
     allScore: number,
 }
+interface StudentScoreDto{
+    studentId:string,
+    studentName:string,
+    examId:string,
+    totalScore:number,
+}
+
 
 export function queryByTeacherIdAndExamSet(teacherId:string,examId:string){
     return service({
@@ -78,5 +85,20 @@ export function queryDesById(examSet:string,answerId:string){
     return service({
         url:'/setting/desById/'+examSet+"/"+answerId,
         method:'get',
+    })
+}
+
+export function queryAllScore(examId:string,lessonId:string,studentId:string){
+    return service({
+        url:'/score/getScore/'+examId+"/"+lessonId+"/"+studentId,
+        method:'get',
+    })
+}
+
+export function getStudentScore(data:StudentScoreDto){
+    return service({
+        url:'/answer/getStudentScore',
+        method:'put',
+        data,
     })
 }

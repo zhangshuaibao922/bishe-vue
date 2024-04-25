@@ -106,6 +106,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           localStorage.setItem('id',ruleForm.username)
           localStorage.setItem('authorityRole', user.authorityRole)
           console.log(localStorage.getItem('authorityRole'))
+          console.log(localStorage.getItem('id'))
           router.push('/welcome');
         }
       }).catch((error: any) => {

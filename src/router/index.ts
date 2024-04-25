@@ -76,6 +76,16 @@ const router = createRouter({
                     path: '/seeScore',
                     name: 'seeScore',
                     component: () => import('../views/pages/seeScore.vue')
+                },
+                {
+                    path: '/studentScore',
+                    name: 'studentScore',
+                    component: () => import('../views/pages/studenScore.vue')
+                },
+                {
+                    path: '/oneStudent',
+                    name: 'oneStudent',
+                    component: () => import('../views/pages/oneStudent.vue')
                 }
             ]
         },

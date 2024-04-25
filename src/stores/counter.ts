@@ -1,12 +1,25 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+interface StudentScoreDto {
+  studentId: string;
+  studentName: string;
+  examId: string;
+  totalScore: number;
+}
+
+export const useStudentStore = defineStore({
+  id: 'student',
+  state: () => ({
+    studentScoreList: [] as StudentScoreDto[],
+    studentInfo:{} as StudentScoreDto,
+  }),
+  actions: {
+    setStudentScoreList(studentScoreList: StudentScoreDto[]) {
+      this.studentScoreList = studentScoreList;
+    },
+    setStudentInfo(studentInfo: StudentScoreDto) {
+      this.studentInfo = studentInfo;
+    }
   }
-
-  return { count, doubleCount, increment }
-})
+});
