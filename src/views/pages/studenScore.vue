@@ -1,6 +1,13 @@
 <template>
-  <div style="width: 100%;height: 100%;">
-    <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
+  <div style="width: 100%;height: 100%;display: flex">
+    <el-card style="height: 100%;width: 50%">
+      <el-card style="height: 100%;width: 250px">
+        <div style="display: block;">
+          <el-text size="large" type="primary">答案备注</el-text>
+        </div>
+      </el-card>
+    </el-card>
+    <el-card shadow="never" style="width: 50%;height: 90%;">
       <el-button size="large" style="margin-bottom: 10px" type="primary" @click="doBack">返回列表
       </el-button>
       <el-table

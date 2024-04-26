@@ -186,8 +186,8 @@ const init = () => {
         name: 'image'
       },
       menu: ['draw', 'shape', 'text'],
-      initMenu: '',
-      menuBarPosition: 'right',
+      initMenu: 'draw',
+      menuBarPosition: 'bottom',
       locale: locale_zh,
       theme: customTheme
     },
