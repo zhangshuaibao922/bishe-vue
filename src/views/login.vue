@@ -97,11 +97,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     // 处理登录成功的情况
     if (valid) {
       login(ruleForm).then((res) => {
-        const user: User = res.data.data;
-        console.log(user);
-        if (Object.keys(user).length == 0) {
+        if(res.data.data===null){
           ElMessage.error("登陆失败，请检查账号密码")
-        } else {
+        }else {
+          const user: User = res.data.data;
+          console.log(user);
           studentStore.setUserInfo(user);
           ElMessage.success("登录成功")
           localStorage.setItem('name', user.name)
