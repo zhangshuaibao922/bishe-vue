@@ -11,6 +11,31 @@ interface ChooseInfo {
     lessonId: string
     studentId: string
 }
+interface StudentInfo {
+    classId: string
+    studentId: string
+    studentPassword: string
+    studentName: string
+    idCardNo: string
+    mobilePhone: string
+    gender: string
+    status: string
+    authorityId: string
+    description: string
+}
+interface Student {
+    id: number
+    classId: string
+    studentId: string
+    studentPassword: string
+    studentName: string
+    idCardNo: string
+    mobilePhone: string
+    gender: string
+    status: string
+    authorityId: string
+    description: string
+}
 export function queryAll(lessonId:string){
     return service({
         url:'/choose/all/'+lessonId,
@@ -53,6 +78,47 @@ export function deleteById(studentId:string){
 export function getInfo(studentId:string){
     return service({
         url:'/student/getInfo/'+studentId,
+        method:'get',
+    })
+}
+
+export function getPaperClassId(examId:string){
+    return service({
+        url:'/exam/getModelClass/'+examId,
+        method:'get',
+    })
+}
+
+export function getAll(){
+    return service({
+        url:'/student/getAll',
+        method:'get',
+    })
+}
+
+export function add(data:StudentInfo){
+    return service({
+        url:'/student',
+        method:'post',
+        data,
+    })
+}
+export function deleteByIdStudent(id:string){
+    return service({
+        url:'/student/deleteStudentId/'+id,
+        method:'delete',
+    })
+}
+export function updateStudent(data:Student){
+    return service({
+        url:'/student',
+        method:'put',
+        data,
+    })
+}
+export function selectLike(studentId:string){
+    return service({
+        url:'/student/getLike/'+studentId,
         method:'get',
     })
 }

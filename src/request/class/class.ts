@@ -25,6 +25,17 @@ interface Teacher {
     status: string
     description: string
 }
+interface TeacherInfo {
+    collegeId: string
+    teacherId: string
+    teacherName: string
+    teacherPassword: string
+    idCardNo: string
+    mobilePhone: string
+    authorityId: string
+    status: string
+    description: string
+}
 interface Instruct {
     lessonId: string
     teacherId: string
@@ -48,6 +59,21 @@ export function updateTeacher(data:Teacher){
         data,
     })
 }
+export function deleteByIdTeacher(id:string){
+    return service({
+        url:'/teacher/deleteById/'+id,
+        method:'delete',
+    })
+}
+
+export function insertTeacherInfo(data:TeacherInfo){
+    return service({
+        url:'/teacher',
+        method:'post',
+        data,
+    })
+}
+
 export function queryTeachers(teacherName:string){
     return service({
         url:'/teacher/select/'+teacherName,

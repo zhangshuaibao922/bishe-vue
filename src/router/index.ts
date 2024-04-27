@@ -19,14 +19,14 @@ const router = createRouter({
             name: 'home',
             component: () => import('../views/home.vue'),
             children: [{
-                path: '/welcome',
-                name: 'welcome',
-                component: () => import('../views/pages/welcome.vue')
-            }, {
-                path: '/answer',
-                name: 'answer',
-                component: () => import('../views/pages/answer.vue')
-            },
+                    path: '/welcome',
+                    name: 'welcome',
+                    component: () => import('../views/pages/welcome.vue')
+                }, {
+                    path: '/answer',
+                    name: 'answer',
+                    component: () => import('../views/pages/answer.vue')
+                },
                 {
                     path: '/school',
                     name: 'school',
@@ -43,9 +43,9 @@ const router = createRouter({
                     component: () => import('../views/pages/student.vue')
                 },
                 {
-                    path: '/teacher',
-                    name: 'teacher',
-                    component: () => import('../views/pages/teacher.vue')
+                    path: '/authority',
+                    name: 'authority',
+                    component: () => import('../views/pages/authority.vue')
                 },
                 {
                     path: '/myclass',
@@ -91,6 +91,16 @@ const router = createRouter({
                     path: '/oneStudent',
                     name: 'oneStudent',
                     component: () => import('../views/pages/oneStudent.vue')
+                },
+                {
+                    path: '/teacher',
+                    name: 'teacher',
+                    component: () => import('../views/pages/teacher.vue')
+                },
+                {
+                    path: '/studentInfo',
+                    name: 'studentInfo',
+                    component: () => import('../views/pages/studentInfo.vue')
                 }
             ]
         },

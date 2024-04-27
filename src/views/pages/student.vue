@@ -117,6 +117,7 @@ import {queryAll, queryByStudentId, addByInfo, deleteById, queryById} from "@/re
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
 
+
 const router = useRouter();
 
 interface Student {

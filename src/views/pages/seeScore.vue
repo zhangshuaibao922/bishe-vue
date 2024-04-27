@@ -87,6 +87,7 @@ const toSetScore=async (data:Exam)=>{
     data.lessonId,
       studentId.value,
   );
+  localStorage.setItem('ScoreExamID',data.examId);
   studentId.value='';
   studentStore.setStudentScoreList(res.data.data);
   router.push("studentScore");

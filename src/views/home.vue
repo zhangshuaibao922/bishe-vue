@@ -19,30 +19,31 @@
               <el-icon size="30px"><Notification /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">信息管理</span>
             </template>
-            <el-menu-item index="1-1" @click="toSchool">学院管理</el-menu-item>
-            <el-menu-item index="1-2" @click="toClass">课程管理</el-menu-item>
+            <el-menu-item index="1-1" @click="toTeacher">教师管理</el-menu-item>
+            <el-menu-item index="1-2" @click="toStudentInfo">学生管理</el-menu-item>
+            <el-menu-item index="1-3" @click="toClass">课程管理</el-menu-item>
           </el-sub-menu>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2" @click="toMyClass">
+          <el-menu-item v-if="role!=='ROOT'&&role!=='STUDENT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="2" @click="toMyClass">
             <el-icon size="30px"><icon-menu /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px" >我的课程</span></template>
           </el-menu-item>
-          <el-sub-menu style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
+          <el-sub-menu v-if="role!=='ROOT'&&role!=='STUDENT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="3">
             <template #title>
-              <el-icon size="30px"><Notification /></el-icon>
+              <el-icon size="30px"><Crop /></el-icon>
               <span style="font-size: 18px;margin-left: 10px">考试设置</span>
             </template>
             <el-menu-item index="3-1" @click="toTest">测试</el-menu-item>
             <el-menu-item index="3-2" @click="toExam">考试</el-menu-item>
           </el-sub-menu>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="toScore">
-            <el-icon size="30px"><icon-menu /></el-icon>
+          <el-menu-item v-if="role!=='ROOT'&&role!=='STUDENT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="4" @click="toScore">
+            <el-icon size="30px"><EditPen /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px" >在线批阅</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5" @click="toSeeScore">
+          <el-menu-item v-if="role!=='ROOT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="5" @click="toSeeScore">
             <el-icon size="30px"><document /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px" >成绩统计</span></template>
           </el-menu-item>
-          <el-menu-item style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6">
+          <el-menu-item v-if="role!=='ROOT'&&role!=='STUDENT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6" @click="toAuthority">
             <el-icon  size="30px"><setting /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">权限分配</span></template>
           </el-menu-item>
@@ -75,7 +76,7 @@ import {ref, onMounted} from 'vue';
 import {
   Document,
   Menu as IconMenu,
-  Setting, Notification, User,
+  Setting, Notification, User,EditPen,Crop
 } from '@element-plus/icons-vue'
 import {useRouter} from "vue-router";
 const username=ref(localStorage.getItem("name"));
@@ -123,6 +124,18 @@ const toSeeScore=()=>{
 const toWelcome=()=>{
   mark.value="用户信息"
   router.push('welcome');
+}
+const toTeacher=()=>{
+  mark.value="教师管理"
+  router.push('teacher');
+}
+const toAuthority=()=>{
+  mark.value="权限管理"
+  router.push('authority');
+}
+const toStudentInfo=()=>{
+  mark.value="学生管理"
+  router.push('studentInfo');
 }
 onMounted(async () => {
   role.value=localStorage.getItem('authorityRole')
