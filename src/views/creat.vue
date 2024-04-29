@@ -1,41 +1,121 @@
 <template>
   <div class="login-box">
-    <el-select v-model="identity" placeholder="选择身份" style="width: 200px">
-      <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-      />
-    </el-select>
-    <el-form
-        ref="ruleFormRef"
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        label-width="80px"
-        class="demo-ruleForm"
-    >
-      <h2>在线批阅系统</h2>
-      <el-form-item label="身份：" prop="identity">
-      </el-form-item>
-      <el-form-item label="账号：" prop="username">
-        <el-input v-model="ruleForm.username" autocomplete="off" style="width: 200px"/>
-      </el-form-item>
-      <el-form-item label="密码：" prop="password">
-        <el-input
-            v-model="ruleForm.password"
-            type="password"
-            autocomplete="off"
-            style="width: 200px"
+    <div class="demo-ruleForm">
+      <h2>账号注册</h2>
+      <el-select v-model="identity" placeholder="选择身份" style="margin-left:60px;margin-bottom: 20px;width: 200px">
+        <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
         />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)">
-          登录
-        </el-button>
-      </el-form-item>
-    </el-form>
+      </el-select>
+      <el-form
+          v-if="identity==='student'"
+          ref="ruleFormRef"
+          :model="studentInfo"
+          status-icon
+          :rules="rules"
+          label-width="90px"
+      >
+        <el-form-item label="学号：" prop="studentId">
+          <el-input v-model="studentInfo.studentId" autocomplete="off" style="width: 200px"/>
+        </el-form-item>
+        <el-form-item label="姓名：" prop="studentName">
+          <el-input
+              v-model="studentInfo.studentName"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="密码：" prop="studentPassword">
+          <el-input
+              v-model="studentInfo.studentPassword"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="身份证号：" prop="idCardNo">
+          <el-input
+              v-model="studentInfo.idCardNo"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="手机号：" prop="mobilePhone">
+          <el-input
+              v-model="studentInfo.mobilePhone"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm(ruleFormRef)">
+            注册
+          </el-button>
+          <el-button type="primary" style="margin-left: 70px" @click="toLogin()">
+            去登录
+          </el-button>
+        </el-form-item>
+      </el-form>
+      <el-form
+          v-if="identity==='teacher'"
+          ref="ruleFormRef"
+          :model="teacherInfo"
+          status-icon
+          :rules="rules"
+          label-width="90px"
+      >
+        <el-form-item label="教师ID：" prop="teacherId">
+          <el-input v-model="teacherInfo.teacherId" autocomplete="off" style="width: 200px"/>
+        </el-form-item>
+        <el-form-item label="教师名称：" prop="teacherName">
+          <el-input
+              v-model="teacherInfo.teacherName"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="密码：" prop="teacherPassword">
+          <el-input
+              v-model="teacherInfo.teacherPassword"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="身份证号：" prop="idCardNo">
+          <el-input
+              v-model="teacherInfo.idCardNo"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="手机号：" prop="mobilePhone">
+          <el-input
+              v-model="teacherInfo.mobilePhone"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm(ruleFormRef)">
+            注册
+          </el-button>
+          <el-button type="primary" style="margin-left: 70  px" @click="toLogin()">
+            去登录
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
   </div>
 </template>
 
@@ -44,9 +124,9 @@ import {ref} from "vue";
 import type {FormInstance, FormRules} from 'element-plus';
 import {useRouter} from "vue-router";
 import {ElMessage} from 'element-plus';
+import {createStudent,createTeacher} from "@/request/login/login"
 
-interface Teacher {
-  id: number
+interface TeacherInfo {
   collegeId: string
   teacherId: string
   teacherName: string
@@ -57,8 +137,8 @@ interface Teacher {
   status: string
   description: string
 }
-interface Student {
-  id: string
+
+interface StudentInfo {
   classId: string
   studentId: string
   studentPassword: string
@@ -82,26 +162,72 @@ const options = [
 ]
 const ruleFormRef = ref<FormInstance>()
 const router = useRouter()
-const studentInfo=ref<Student>()
-const teacherInfo=ref<Teacher>()
+const studentInfo=ref<StudentInfo>({
+  classId: '10',
+  studentId: '',
+  studentPassword: '',
+  studentName: '',
+  idCardNo: '',
+  mobilePhone: '',
+  gender: '1',
+  status: '1',
+  authorityId: '4',
+  description: '',
+})
+const teacherInfo=ref<TeacherInfo>({
+  collegeId: '10',
+  teacherId: '',
+  teacherName: '',
+  teacherPassword: '',
+  idCardNo: '',
+  mobilePhone: '',
+  authorityId: '3',
+  status: '1',
+  description: '',
+})
 const identity=ref('')
 
 const rules = {
-  username: [
+  teacherId: [
     {required: true, message: '请输入账号', trigger: 'blur'},
     {min: 3, max: 20, message: '账号的长度在3-10之间', trigger: 'blur'},
   ],
-  password: [
+  teacherPassword: [
+    {required: true, message: '请输入密码', trigger: 'blur'},
+    {min: 3, max: 10, message: '密码的长度在3-10之间', trigger: 'blur'},
+  ],
+  studentId: [
+    {required: true, message: '请输入账号', trigger: 'blur'},
+    {min: 3, max: 20, message: '账号的长度在3-10之间', trigger: 'blur'},
+  ],
+  studentPassword: [
     {required: true, message: '请输入密码', trigger: 'blur'},
     {min: 3, max: 10, message: '密码的长度在3-10之间', trigger: 'blur'},
   ],
 };
+const toLogin=()=>{
+  router.push("/")
+}
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid) => {
+  await formEl.validate(async (valid) => {
     // 处理登录成功的情况
     if (valid) {
-
+      if (identity.value === 'student') {
+        const res = await createStudent(studentInfo.value);
+        if(res.data){
+          ElMessage.success("创建成功")
+        }else {
+          ElMessage.error("未知错误")
+        }
+      } else if (identity.value === 'teacher') {
+        const res = await createTeacher(teacherInfo.value);
+        if(res.data){
+          ElMessage.success("创建成功")
+        }else {
+          ElMessage.error("未知错误")
+        }
+      }
     } else {
       console.log('error submit!')
       return false

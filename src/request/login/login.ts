@@ -13,6 +13,30 @@ interface User {
     authorityRole: string,
     identity: string,
 }
+interface TeacherInfo {
+    collegeId: string
+    teacherId: string
+    teacherName: string
+    teacherPassword: string
+    idCardNo: string
+    mobilePhone: string
+    authorityId: string
+    status: string
+    description: string
+}
+
+interface StudentInfo {
+    classId: string
+    studentId: string
+    studentPassword: string
+    studentName: string
+    idCardNo: string
+    mobilePhone: string
+    gender: string
+    status: string
+    authorityId: string
+    description: string
+}
 export function login(data:loginData){
     return service({
         url:'/login/login',
@@ -28,3 +52,21 @@ export function updatePassword(data:User){
         data
     })
 }
+
+export function createStudent(data: StudentInfo){
+    return service({
+        url:'/student',
+        method:'post',
+        data
+    })
+}
+
+
+export function createTeacher(data: TeacherInfo){
+    return service({
+        url:'/teacher',
+        method:'post',
+        data
+    })
+}
+

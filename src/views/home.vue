@@ -43,7 +43,7 @@
             <el-icon size="30px"><document /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px" >成绩统计</span></template>
           </el-menu-item>
-          <el-menu-item v-if="role!=='ROOT'&&role!=='STUDENT'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6" @click="toAuthority">
+          <el-menu-item v-if="role==='DIRECTOR'" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;" index="6" @click="toAuthority">
             <el-icon  size="30px"><setting /></el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">权限分配</span></template>
           </el-menu-item>

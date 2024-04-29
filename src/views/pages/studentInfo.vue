@@ -52,15 +52,15 @@
 
       <el-dialog
           v-model="centerDialogVisible"
-          title="修改教师"
+          title="修改学生"
           width="500"
           align-center
       >
         <el-form :model="changeData" label-width="100px">
-          <el-form-item label="教师ID">
+          <el-form-item label="学号">
             <el-input v-model="changeData.studentId"></el-input>
           </el-form-item>
-          <el-form-item label="教师名称">
+          <el-form-item label="名称">
             <el-input v-model="changeData.studentName"></el-input>
           </el-form-item>
           <el-form-item label="密码">

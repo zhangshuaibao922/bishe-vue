@@ -34,6 +34,9 @@
         <el-button type="primary" class="login-btn" @click="submitForm(ruleFormRef)">
           登录
         </el-button>
+        <el-button type="primary" class="login-btn" style="margin-left: 75px" @click="toCreat()">
+          注册
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -91,6 +94,10 @@ const rules = {
     {min: 3, max: 10, message: '密码的长度在3-10之间', trigger: 'blur'},
   ],
 };
+
+const toCreat=()=>{
+  router.push("creat")
+}
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid) => {
@@ -136,11 +143,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     background: #ffffff;
     padding: 40px;
     border-radius: 5px;
-  }
-
-  .login-btn {
-    margin-left: 40px;
-    width: 48%;
   }
 
   h2 {
