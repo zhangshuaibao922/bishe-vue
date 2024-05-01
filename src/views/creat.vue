@@ -109,7 +109,7 @@
           <el-button type="primary" @click="submitForm(ruleFormRef)">
             注册
           </el-button>
-          <el-button type="primary" style="margin-left: 70  px" @click="toLogin()">
+          <el-button type="primary" style="margin-left: 70px" @click="toLogin()">
             去登录
           </el-button>
         </el-form-item>
