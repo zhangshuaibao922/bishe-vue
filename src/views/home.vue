@@ -25,9 +25,10 @@
               </el-icon>
               <span style="font-size: 18px;margin-left: 10px">信息管理</span>
             </template>
-            <el-menu-item index="1-1" @click="toTeacher">教师管理</el-menu-item>
-            <el-menu-item index="1-2" @click="toStudentInfo">学生管理</el-menu-item>
-            <el-menu-item index="1-3" @click="toClass">课程管理</el-menu-item>
+            <el-menu-item index="1-1" @click="toSchool">学院管理</el-menu-item>
+            <el-menu-item index="1-2" @click="toTeacher">教师管理</el-menu-item>
+            <el-menu-item index="1-3" @click="toStudentInfo">学生管理</el-menu-item>
+            <el-menu-item index="1-4" @click="toClass">课程管理</el-menu-item>
           </el-sub-menu>
           <el-menu-item v-if="role!=='ROOT'&&role!=='STUDENT'"
                         index="2" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;"
@@ -63,7 +64,7 @@
             </el-icon>
             <template #title><span style="font-size: 18px;margin-left: 10px">成绩统计</span></template>
           </el-menu-item>
-          <el-menu-item v-if="role==='DIRECTOR'"
+          <el-menu-item v-if="role==='ROOT'"
                         index="6" style="border-bottom-style: solid;border-width: 1px;border-color: #d9d9d9;"
                         @click="toAuthority">
             <el-icon size="30px">
@@ -120,6 +121,7 @@ const username = ref(localStorage.getItem("name"));
 const mark = ref("欢迎使用");
 const opends = ['1', '2', '3', '4', '5', '6', '7'];
 const role = ref('');
+
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }

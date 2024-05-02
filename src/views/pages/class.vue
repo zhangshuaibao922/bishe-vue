@@ -1,6 +1,14 @@
 <template>
   <div style="width: 100%;height: 100%;">
     <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
+      <el-select v-model="collegeID" placeholder="Select" style="width: 200px" size="large" @change="selectByCollege">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          <span style="float: left">{{ item.label }}</span>
+          <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
+            {{ item.value }}
+          </span>
+        </el-option>
+      </el-select>
       <el-input v-model="input" style="width: 400px;margin-left: 20%"
                 placeholder="请输入课程名称" size="large"/>
       <el-button type="primary" @click="selectLesson" size="large" style="">查询课程
@@ -11,7 +19,7 @@
     </el-card>
     <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
       <el-table v-loading="loading" :data="tableData" style="width: 100%" height="700px">
-        <el-table-column label="课程号" width="200">
+        <el-table-column label="课程号" width="150">
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <el-icon><Collection /></el-icon>
@@ -19,7 +27,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="课程名称" width="200">
+        <el-table-column label="课程名称" width="150">
           <template #default="scope">
             <el-popover effect="light" trigger="hover" placement="top" width="auto">
               <template #default>
@@ -30,6 +38,11 @@
                 <el-tag>{{ scope.row.lessonName }}</el-tag>
               </template>
             </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属学院" width="200">
+          <template #default="scope">
+            <el-text size="large">{{ scope.row.collegeName }}</el-text>
           </template>
         </el-table-column>
         <el-table-column label="任课教师" width="200">
@@ -75,6 +88,16 @@
           <el-form-item label="课程名称">
             <el-input v-model="form.lessonName"></el-input>
           </el-form-item>
+          <el-form-item label="所属学院">
+            <el-select v-model="form.collegeId" placeholder="选择学院">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                <span style="float: left">{{ item.label }}</span>
+                <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
+                  {{ item.value }}
+                </span>
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="学分">
             <el-input v-model="form.score"></el-input>
           </el-form-item>
@@ -105,6 +128,16 @@
           </el-form-item>
           <el-form-item label="课程名称">
             <el-input v-model="form1.lessonName"></el-input>
+          </el-form-item>
+          <el-form-item label="所属学院">
+            <el-select v-model="form1.collegeId" placeholder="选择学院">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                <span style="float: left">{{ item.label }}</span>
+                <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
+                  {{ item.value }}
+                </span>
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="学分">
             <el-input v-model="form1.score"></el-input>
@@ -187,6 +220,7 @@ import { Collection,UserFilled } from '@element-plus/icons-vue'
 import {queryAll, update,addByInfo,deleteById,addByTeacherId,queryById,queryByTeacherId} from "@/request/class/class";
 import {ElMessage} from "element-plus";
 import router from "@/router";
+import {query, queryLessonsByCollegeID, queryStudentsByCollegeID} from "@/request/school/query";
 
 interface Lesson {
   id: string
@@ -194,6 +228,7 @@ interface Lesson {
   lessonName: string
   hours: string
   score: string
+  collegeId: string
 }
 interface LessonDto {
   id: string
@@ -203,6 +238,8 @@ interface LessonDto {
   score: string
   teacherId: string
   teacherName: string
+  collegeId: string
+  collegeName: string
 }
 interface Teacher {
   id: number
@@ -222,8 +259,17 @@ interface LessonInfo {
   lessonName: string
   hours: string
   score: string
+  collegeId: string
+}
+interface College {
+  id: number,
+  collegeId: string,
+  collegeName: string,
 }
 
+const collegeList = ref<College[]>([]);
+const options = ref([]);
+const collegeID=ref('');
 const centerDialogVisible = ref(false)
 const centerDialogVisible1 = ref(false)
 const centerDialogVisible2 = ref(false)
@@ -237,12 +283,14 @@ const form = ref<Lesson>({
   lessonName: '',
   hours: '',
   score: '',
+  collegeId: '',
 });
 const form1 = ref<LessonInfo>({
   lessonId: '',
   lessonName: '',
   hours: '',
-  score: ''
+  score: '',
+  collegeId: ''
 });
 const selectStudent=(lessonId:string)=>{
   localStorage.setItem('lessonId', lessonId)
@@ -260,6 +308,22 @@ const selectTeacher=async (teacherId:string)=>{
   } else {
     ElMessage.success("请选择教师");
     teacher.value = res.data
+  }
+}
+const selectByCollege = async ()=>{
+  console.log(collegeID.value)
+  const res =await queryLessonsByCollegeID(collegeID.value)
+  tableData.value = res.data.data;
+  if(res.data.data==null){
+    ElMessage.success("暂无数据")
+  }else {
+    for (let i = 0; i < tableData.value.length; i++) {
+      for (let j = 0; j < collegeList.value.length; j++) {
+        if (tableData.value[i].collegeId == collegeList.value[j].collegeId) {
+          tableData.value[i].collegeName = collegeList.value[j].collegeName;
+        }
+      }
+    }
   }
 }
 const addTeacherToClass=async (teacherId:string)=>{
@@ -326,10 +390,30 @@ const add= async (data:LessonInfo)=>{
 }
 const tableData= ref<LessonDto[]>([]);
 // 模拟后端返回的数据
-const fetchData = () => {
+const getOptions=async ()=>{
+  await query().then((res) => {
+    console.log(res.data.data);
+    collegeList.value = res.data.data;
+    for (let i = 0; i < collegeList.value.length; i++) {
+      options.value.push({
+        value: collegeList.value[i].collegeId,
+        label: collegeList.value[i].collegeName,
+      })
+    }
+  })
+}
+const fetchData = async () => {
+  console.log(options.value)
   queryAll().then((res) => {
         console.log(res.data.data)
         tableData.value = res.data.data;
+    for (let i = 0; i < tableData.value.length; i++) {
+      for (let j = 0; j < collegeList.value.length; j++) {
+        if (tableData.value[i].collegeId == collegeList.value[j].collegeId) {
+          tableData.value[i].collegeName = collegeList.value[j].collegeName;
+        }
+      }
+    }
       }
   ).catch((error) => {
     console.error("出现错误", error);
@@ -343,6 +427,7 @@ const updateLesson=(data:Lesson)=>{
   form.value.lessonName=data.lessonName
   form.value.hours=data.hours
   form.value.score=data.score
+  form.value.collegeId=data.collegeId
 }
 
 const change= async (data:Lesson)=>{
@@ -359,6 +444,7 @@ const change= async (data:Lesson)=>{
 }
 
 onMounted(async () => {
+  await getOptions();
   await fetchData();
 });
 </script>

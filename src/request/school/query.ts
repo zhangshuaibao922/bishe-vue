@@ -18,6 +18,25 @@ export function query(){
     })
 }
 
+export function queryTeachersByCollegeID(collegeId:string){
+    return service({
+        url:'/teacher/byCollegeId/'+collegeId,
+        method:'get',
+    })
+}
+export function queryStudentsByCollegeID(collegeId:string){
+    return service({
+        url:'/student/byCollegeId/'+collegeId,
+        method:'get',
+    })
+}
+
+export function queryLessonsByCollegeID(collegeId:string){
+    return service({
+        url:'/lesson/byCollegeId/'+collegeId,
+        method:'get',
+    })
+}
 export function queryById(data: College){
     return service({
         url:'/college',

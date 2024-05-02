@@ -1,37 +1,47 @@
 <template>
   <div style="width: 100%;height: 100%;">
-    <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
-      <el-input v-model="input" style="width: 400px;margin-left: 20%"
-                placeholder="请输入学号" size="large"/>
-      <el-button type="primary" @click="selectStudent" size="large" style="">查询学生
+    <el-card shadow="hover" style="margin-left: 100px;margin-right: 100px;height: 10%">
+      <el-select v-model="collegeID" placeholder="Select" style="width: 200px" size="large" @change="selectByCollege">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          <span style="float: left">{{ item.label }}</span>
+          <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
+            {{ item.value }}
+          </span>
+        </el-option>
+      </el-select>
+      <el-input v-model="input" placeholder="请输入学号"
+                size="large" style="width: 400px;margin-left: 5%"/>
+      <el-button size="large" style="" type="primary" @click="selectStudent">查询学生
       </el-button>
       <el-button round size="large" style="margin-left: 100px" type="success" @click="addStudent">新增学生
       </el-button>
     </el-card>
-    <el-card style="margin-left: 100px;margin-right: 100px;height: 90%;"  shadow="never">
+    <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column label="学号">
           <template #default="scope">
             <div style="display: flex; align-items: center">
-              <el-icon><Collection /></el-icon>
+              <el-icon>
+                <Collection/>
+              </el-icon>
               <span style="margin-left: 10px">{{ scope.row.studentId }}</span>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="姓名">
           <template #default="scope">
-            <el-text size="large">{{scope.row.studentName}}</el-text>
+            <el-text size="large">{{ scope.row.studentName }}</el-text>
           </template>
         </el-table-column>
-        <el-table-column label="密码">
+        <el-table-column label="所属学院">
           <template #default="scope">
-            <el-text size="large">{{scope.row.studentPassword}}</el-text>
+            <el-text size="large">{{ scope.row.collegeName }}</el-text>
           </template>
         </el-table-column>
         <el-table-column label="状态">
           <template #default="scope">
-              <el-text v-if="scope.row.status==='1'" type="primary" size="large">正常</el-text>
-              <el-text v-else type="primary" size="large">注销</el-text>
+            <el-text v-if="scope.row.status==='1'" size="large" type="primary">正常</el-text>
+            <el-text v-else size="large" type="primary">注销</el-text>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="300">
@@ -52,9 +62,9 @@
 
       <el-dialog
           v-model="centerDialogVisible"
+          align-center
           title="修改学生"
           width="500"
-          align-center
       >
         <el-form :model="changeData" label-width="100px">
           <el-form-item label="学号">
@@ -62,6 +72,27 @@
           </el-form-item>
           <el-form-item label="名称">
             <el-input v-model="changeData.studentName"></el-input>
+          </el-form-item>
+          <el-form-item label="所属学院">
+            <el-select v-model="changeData.collegeId" placeholder="Select">
+              <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              >
+                <span style="float: left">{{ item.label }}</span>
+                <span
+                    style="
+          float: right;
+          color: var(--el-text-color-secondary);
+          font-size: 13px;
+        "
+                >
+        {{ item.value }}
+      </span>
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="密码">
             <el-input v-model="changeData.studentPassword"></el-input>
@@ -90,9 +121,9 @@
 
       <el-dialog
           v-model="centerDialogVisible1"
+          align-center
           title="新增学生"
           width="500"
-          align-center
       >
         <el-form :model="insertData" label-width="100px">
           <el-form-item label="学号">
@@ -100,6 +131,27 @@
           </el-form-item>
           <el-form-item label="姓名">
             <el-input v-model="insertData.studentName"></el-input>
+          </el-form-item>
+          <el-form-item label="所属学院">
+            <el-select v-model="insertData.collegeId" placeholder="Select">
+              <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              >
+                <span style="float: left">{{ item.label }}</span>
+                <span
+                    style="
+          float: right;
+          color: var(--el-text-color-secondary);
+          font-size: 13px;
+        "
+                >
+        {{ item.value }}
+      </span>
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="密码">
             <el-input v-model="insertData.studentPassword"></el-input>
@@ -131,35 +183,15 @@
 
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue';
-import { Collection } from '@element-plus/icons-vue'
-import {
-  queryAll,
-  update,
-  addByInfo,
-  deleteById,
-  queryById,
-  queryAllTeacher,
-  updateTeacher, queryTeachers, deleteByIdTeacher, insertTeacherInfo
-} from "@/request/class/class";
+import {Collection} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
-import router from "@/router";
 import {add, deleteByIdStudent, getAll, selectLike, updateStudent} from "@/request/student/student";
+import {query, queryStudentsByCollegeID, queryTeachersByCollegeID} from "@/request/school/query";
 
 interface Student {
   id: number
-  classId: string
-  studentId: string
-  studentPassword: string
-  studentName: string
-  idCardNo: string
-  mobilePhone: string
-  gender: string
-  status: string
-  authorityId: string
-  description: string
-}
-interface StudentInfo {
-  classId: string
+  collegeId: string
+  collegeName: string
   studentId: string
   studentPassword: string
   studentName: string
@@ -171,11 +203,33 @@ interface StudentInfo {
   description: string
 }
 
-const centerDialogVisible=ref(false);
-const centerDialogVisible1=ref(false);
-const changeData=ref<Student>();
-const insertData=ref<StudentInfo>({
-  classId: '10',
+interface StudentInfo {
+  collegeId: string
+  studentId: string
+  studentPassword: string
+  studentName: string
+  idCardNo: string
+  mobilePhone: string
+  gender: string
+  status: string
+  authorityId: string
+  description: string
+}
+
+interface College {
+  id: number,
+  collegeId: string,
+  collegeName: string,
+}
+
+const collegeList = ref<College[]>([]);
+const options = ref([]);
+const collegeID=ref('');
+const centerDialogVisible = ref(false);
+const centerDialogVisible1 = ref(false);
+const changeData = ref<Student>();
+const insertData = ref<StudentInfo>({
+  collegeId: '',
   studentId: '',
   studentPassword: '',
   studentName: '',
@@ -187,70 +241,104 @@ const insertData=ref<StudentInfo>({
   description: '',
 });
 const input = ref<string>('')
-const tableData= ref<Student[]>([]);
+const tableData = ref<Student[]>([]);
 
-const updateTeacherInfo=(data:Student)=>{
-  changeData.value=data;
-  centerDialogVisible.value=true;
+const updateTeacherInfo = (data: Student) => {
+  changeData.value = data;
+  centerDialogVisible.value = true;
 }
-const addStudent=()=>{
-  centerDialogVisible1.value=true;
+const addStudent = () => {
+  centerDialogVisible1.value = true;
 }
-const addStudentInfo=async ()=>{
-  const res=await add(insertData.value)
-  if(res.data){
+const selectByCollege = async ()=>{
+  console.log(collegeID.value)
+  const res =await queryStudentsByCollegeID(collegeID.value)
+  tableData.value = res.data.data;
+  if(tableData.value.length==0){
+    ElMessage.success("暂无数据")
+  }
+  for (let i = 0; i < tableData.value.length; i++) {
+    for (let j = 0; j < collegeList.value.length; j++) {
+      if (tableData.value[i].collegeId == collegeList.value[j].collegeId) {
+        tableData.value[i].collegeName = collegeList.value[j].collegeName;
+      }
+    }
+  }
+}
+const addStudentInfo = async () => {
+  const res = await add(insertData.value)
+  if (res.data) {
     ElMessage.success("新增成功")
-  }else {
+  } else {
     ElMessage.error("新增失败")
   }
-  centerDialogVisible1.value=false;
-  insertData.value.studentId=''
-  insertData.value.studentName=''
-  insertData.value.studentPassword=''
-  insertData.value.idCardNo=''
-  insertData.value.mobilePhone=''
-  insertData.value.description=''
+  centerDialogVisible1.value = false;
+  insertData.value.studentId = ''
+  insertData.value.studentName = ''
+  insertData.value.studentPassword = ''
+  insertData.value.idCardNo = ''
+  insertData.value.mobilePhone = ''
+  insertData.value.description = ''
+  insertData.value.collegeId = ''
   await fetchData();
 }
-const deleteStudent=async (id:string)=>{
-  const res=await deleteByIdStudent(id);
-  if(res.data.data){
+const deleteStudent = async (id: string) => {
+  const res = await deleteByIdStudent(id);
+  if (res.data.data) {
     ElMessage.success("删除成功")
-  }else {
+  } else {
     ElMessage.error("删除失败")
   }
   await fetchData();
 }
-const changeStudent=async (data:Student)=>{
-  const res=await updateStudent(data);
-  if(res.data){
+const changeStudent = async (data: Student) => {
+  const res = await updateStudent(data);
+  if (res.data) {
     ElMessage.success("修改成功")
-    centerDialogVisible.value=false;
+    centerDialogVisible.value = false;
     await fetchData();
-  }else {
+  } else {
     ElMessage.error("修改失败")
   }
 }
-const selectStudent=async ()=>{
-  if(input.value===''){
+const selectStudent = async () => {
+  if (input.value === '') {
     ElMessage.success("查询成功")
     await fetchData();
-  }else {
-    const res=await selectLike(input.value);
-    input.value='';
-    if(res.data.code===200){
-      tableData.value=res.data.data;
+  } else {
+    const res = await selectLike(input.value);
+    input.value = '';
+    if (res.data.code === 200) {
+      tableData.value = res.data.data;
       ElMessage.success("查询成功")
-    }else {
+    } else {
       ElMessage.error("查询失败")
     }
   }
 }
 // 模拟后端返回的数据
-const fetchData = () => {
+const getOptions=async ()=>{
+  await query().then((res) => {
+    console.log(res.data.data);
+    collegeList.value = res.data.data;
+    for (let i = 0; i < collegeList.value.length; i++) {
+      options.value.push({
+        value: collegeList.value[i].collegeId,
+        label: collegeList.value[i].collegeName,
+      })
+    }
+  })
+}
+const fetchData = async () => {
   getAll().then((res) => {
-        console.log(res.data.data)
         tableData.value = res.data.data;
+        for (let i = 0; i < tableData.value.length; i++) {
+          for (let j = 0; j < collegeList.value.length; j++) {
+            if (tableData.value[i].collegeId == collegeList.value[j].collegeId) {
+              tableData.value[i].collegeName = collegeList.value[j].collegeName;
+            }
+          }
+        }
       }
   ).catch((error) => {
     console.error("出现错误", error);
@@ -258,6 +346,7 @@ const fetchData = () => {
 };
 
 onMounted(async () => {
+  await getOptions();
   await fetchData();
 });
 </script>

@@ -13,7 +13,7 @@
               </div>
             </template>
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%">
-              <div v-if="item.id!==-1" style="width: 50px; height: 50px; background: red"></div>
+              <div v-if="item.id!==-1" style="width: 50px; height: 50px; background: white"></div>
               <div v-if="item.id===-1"
                    style="width: 100%; height: 50px; background: whitesmoke;display: flex; justify-content: center; align-items: center;" @click="addCollege">
                 <span style="margin-left: 10px;font-size: 20px;font-weight: bold;color: black">新增学院</span>

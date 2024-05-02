@@ -12,7 +12,7 @@ interface ChooseInfo {
     studentId: string
 }
 interface StudentInfo {
-    classId: string
+    collegeId: string
     studentId: string
     studentPassword: string
     studentName: string
@@ -25,7 +25,7 @@ interface StudentInfo {
 }
 interface Student {
     id: number
-    classId: string
+    collegeId: string
     studentId: string
     studentPassword: string
     studentName: string
@@ -96,7 +96,7 @@ export function getAll(){
     })
 }
 
-export function add(data:StudentInfo){
+export function add(data: StudentInfo){
     return service({
         url:'/student',
         method:'post',

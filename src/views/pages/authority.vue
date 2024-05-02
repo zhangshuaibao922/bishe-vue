@@ -84,16 +84,8 @@ const options = [
     label: '管理员',
   },
   {
-    value: '2',
-    label: '教务主任',
-  },
-  {
     value: '3',
     label: '教师',
-  },
-  {
-    value: '4',
-    label: '学生',
   },
 ]
 

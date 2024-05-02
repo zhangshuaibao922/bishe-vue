@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 100%;height: 100%;">
-    <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
+  <div style="width: 100%;height: 100%;display: flex">
+    <el-card shadow="never" style="width: 50%;height: 90%;">
       <el-button size="large" style="margin-bottom: 10px" type="primary" @click="doBack">返回列表
       </el-button>
       <el-table
@@ -8,7 +8,7 @@
           style="width: 100%;"
           height="700px"
       >
-        <el-table-column label="题号" width="200px">
+        <el-table-column label="题号" width="50px">
           <template #default="scope">
             <el-text v-if="scope.row.avgScore!==0"  size="large">{{scope.row.answerId}}</el-text>
             <el-text v-else type="danger" size="large">{{scope.row.answerId}}</el-text>
@@ -16,17 +16,20 @@
         </el-table-column>
         <el-table-column label="链接">
           <template #default="scope">
-            <el-link v-if="scope.row.avgScore!==0"  size="large">{{scope.row.answerUrl}}</el-link>
-            <el-link v-else type="danger" size="large">{{scope.row.answerUrl}}</el-link>
+            <el-button v-if="scope.row.avgScore !== 0" size="large" @click="getURL(scope.row)">{{scope.row.answerUrl}}</el-button>
+            <el-button v-else size="large" type="danger" disabled>暂无</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="得分">
+        <el-table-column label="得分" width="100px">
           <template #default="scope">
             <el-text v-if="scope.row.avgScore!==0" type="primary" size="large">{{scope.row.avgScore}}</el-text>
             <el-text v-else type="danger" size="large">{{scope.row.avgScore}}</el-text>
           </template>
         </el-table-column>
       </el-table>
+    </el-card>
+    <el-card style="height: 100%;width: 50%">
+      <el-image style="margin-left: 50px;margin-top: 20px;width: 500px; height: 700px" :src="url" :fit="'contain'" />
     </el-card>
   </div>
 </template>
@@ -43,13 +46,16 @@ interface AnswerDto{
   answerUrl:string,
   avgScore:number,
 }
+const url=ref('');
 const studentStore = useStudentStore();
 const studentInfo=studentStore.studentInfo;
 const tableData=ref<AnswerDto[]>([]);
 const doBack = () => {
   router.push("studentScore");
 }
-
+const getURL=(data:AnswerDto)=>{
+  url.value=data.answerUrl
+}
 const getData=async ()=>{
   const res=await getStudentScore(studentInfo)
   tableData.value=res.data.data;
