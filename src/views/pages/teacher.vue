@@ -41,7 +41,7 @@
         <el-table-column label="状态">
           <template #default="scope">
             <el-text v-if="scope.row.status==='1'" size="large" type="primary">正常</el-text>
-            <el-text v-else size="large" type="primary">注销</el-text>
+            <el-text v-else size="large" type="danger">注销</el-text>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="300">
@@ -61,6 +61,7 @@
 
 
       <el-dialog
+          :show-close="false"
           v-model="centerDialogVisible"
           align-center
           title="修改教师"
@@ -106,10 +107,24 @@
           <el-form-item label="个人简介">
             <el-input v-model="changeData.description"></el-input>
           </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+                v-model="changeData.status"
+                placeholder="Select"
+                size="large"
+            >
+              <el-option
+                  v-for="item in optionsStatus"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
         </el-form>
         <template #footer>
           <div class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">
+            <el-button @click="falseChangeTeacher()">
               取消
             </el-button>
             <el-button type="primary" @click="changeTeacher(changeData)">
@@ -160,7 +175,7 @@
             <el-button @click="centerDialogVisible1 = false">
               取消
             </el-button>
-            <el-button type="primary" @click="addTeacherInfo(insertData)">
+            <el-button type="primary" @click="addTeacherInfo()">
               确定
             </el-button>
           </div>
@@ -212,6 +227,20 @@ interface College {
   collegeName: string,
 }
 
+const optionsStatus=[
+  {
+    value: '1',
+    label: '正常',
+  },
+  {
+    value: '0',
+    label: '注销',
+  }
+]
+const falseChangeTeacher=async ()=>{
+  centerDialogVisible.value=false;
+  await fetchData();
+}
 const collegeList = ref<College[]>([]);
 const options = ref([]);
 const collegeID=ref('');
@@ -226,7 +255,7 @@ const insertData = ref<TeacherInfo>({
   idCardNo: '',
   mobilePhone: '',
   authorityId: '3',
-  status: '1',
+  status: '',
   description: '',
 });
 const input = ref<string>('')
