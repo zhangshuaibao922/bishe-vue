@@ -26,7 +26,7 @@ interface TeacherInfo {
 }
 
 interface StudentInfo {
-    classId: string
+    collegeId: string
     studentId: string
     studentPassword: string
     studentName: string

@@ -29,6 +29,16 @@
               style="width: 200px"
           />
         </el-form-item>
+        <el-form-item label="所属学院：" prop="idCardNo">
+          <el-select v-model="studentInfo.collegeId" placeholder="选择学院">
+            <el-option v-for="item in optionsCollege" :key="item.value" :label="item.label" :value="item.value">
+              <span style="float: left">{{ item.label }}</span>
+              <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
+                  {{ item.value }}
+                </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="密码：" prop="studentPassword">
           <el-input
               v-model="studentInfo.studentPassword"
@@ -45,6 +55,7 @@
               style="width: 200px"
           />
         </el-form-item>
+
         <el-form-item label="手机号：" prop="mobilePhone">
           <el-input
               v-model="studentInfo.mobilePhone"
@@ -73,13 +84,23 @@
         <el-form-item label="教师ID：" prop="teacherId">
           <el-input v-model="teacherInfo.teacherId" autocomplete="off" style="width: 200px"/>
         </el-form-item>
-        <el-form-item label="教师名称：" prop="teacherName">
+        <el-form-item label="姓名：" prop="teacherName">
           <el-input
               v-model="teacherInfo.teacherName"
               type="password"
               autocomplete="off"
               style="width: 200px"
           />
+        </el-form-item>
+        <el-form-item label="所属学院：" prop="idCardNo">
+          <el-select v-model="teacherInfo.collegeId" placeholder="选择学院" style="width: 200px">
+            <el-option v-for="item in optionsCollege" :key="item.value" :label="item.label" :value="item.value">
+              <span style="float: left">{{ item.label }}</span>
+              <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
+                  {{ item.value }}
+                </span>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="密码：" prop="teacherPassword">
           <el-input
@@ -120,11 +141,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref,onMounted} from "vue";
 import type {FormInstance, FormRules} from 'element-plus';
 import {useRouter} from "vue-router";
 import {ElMessage} from 'element-plus';
 import {createStudent,createTeacher} from "@/request/login/login"
+import {query} from "@/request/school/query";
 
 interface TeacherInfo {
   collegeId: string
@@ -139,7 +161,7 @@ interface TeacherInfo {
 }
 
 interface StudentInfo {
-  classId: string
+  collegeId: string
   studentId: string
   studentPassword: string
   studentName: string
@@ -160,10 +182,18 @@ const options = [
     label: '学生',
   },
 ]
+interface College {
+  id: number,
+  collegeId: string,
+  collegeName: string,
+}
+
+const collegeList = ref<College[]>([]);
+const optionsCollege = ref([]);
 const ruleFormRef = ref<FormInstance>()
 const router = useRouter()
 const studentInfo=ref<StudentInfo>({
-  classId: '10',
+  collegeId: '',
   studentId: '',
   studentPassword: '',
   studentName: '',
@@ -175,7 +205,7 @@ const studentInfo=ref<StudentInfo>({
   description: '',
 })
 const teacherInfo=ref<TeacherInfo>({
-  collegeId: '10',
+  collegeId: '',
   teacherId: '',
   teacherName: '',
   teacherPassword: '',
@@ -208,6 +238,18 @@ const rules = {
 const toLogin=()=>{
   router.push("/")
 }
+const getOptions=async ()=>{
+  await query().then((res) => {
+    console.log(res.data.data);
+    collegeList.value = res.data.data;
+    for (let i = 0; i < collegeList.value.length; i++) {
+      optionsCollege.value.push({
+        value: collegeList.value[i].collegeId,
+        label: collegeList.value[i].collegeName,
+      })
+    }
+  })
+}
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate(async (valid) => {
@@ -234,6 +276,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   })
 }
+onMounted(async () => {
+  await getOptions();
+});
 </script>
 
 <style lang="scss" scoped>
