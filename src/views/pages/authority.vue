@@ -24,7 +24,7 @@
         <el-table-column label="状态">
           <template #default="scope">
               <el-text v-if="scope.row.status==='1'" type="primary" size="large">正常</el-text>
-              <el-text v-else type="primary" size="large">注销</el-text>
+              <el-text v-else type="danger" size="large">注销</el-text>
           </template>
         </el-table-column>
         <el-table-column label="权限" width="300">
