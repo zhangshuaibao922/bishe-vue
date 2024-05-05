@@ -279,6 +279,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           const res = await createStudent(studentInfo.value);
           if(res.data){
             ElMessage.success("创建成功")
+            router.push("/")
           }else {
             ElMessage.error("未知错误")
           }
@@ -286,6 +287,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           const res = await createTeacher(teacherInfo.value);
           if(res.data){
             ElMessage.success("创建成功")
+            router.push("/")
           }else {
             ElMessage.error("未知错误")
           }
