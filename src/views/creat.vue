@@ -47,6 +47,14 @@
               style="width: 200px"
           />
         </el-form-item>
+        <el-form-item label="重复密码：" prop="password">
+          <el-input
+              v-model="password"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
         <el-form-item label="身份证号：" prop="idCardNo">
           <el-input
               v-model="studentInfo.idCardNo"
@@ -105,6 +113,14 @@
         <el-form-item label="密码：" prop="teacherPassword">
           <el-input
               v-model="teacherInfo.teacherPassword"
+              type="password"
+              autocomplete="off"
+              style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="重复密码：" prop="password">
+          <el-input
+              v-model="password"
               type="password"
               autocomplete="off"
               style="width: 200px"
@@ -188,6 +204,7 @@ interface College {
   collegeName: string,
 }
 
+const password=ref();
 const collegeList = ref<College[]>([]);
 const optionsCollege = ref([]);
 const ruleFormRef = ref<FormInstance>()
@@ -251,30 +268,34 @@ const getOptions=async ()=>{
   })
 }
 const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate(async (valid) => {
-    // 处理登录成功的情况
-    if (valid) {
-      if (identity.value === 'student') {
-        const res = await createStudent(studentInfo.value);
-        if(res.data){
-          ElMessage.success("创建成功")
-        }else {
-          ElMessage.error("未知错误")
+  if(password.value!==studentInfo.value.studentPassword&&password.value!==teacherInfo.value.teacherPassword){
+    ElMessage.error("两次密码不一致")
+  }else {
+    if (!formEl) return
+    await formEl.validate(async (valid) => {
+      // 处理登录成功的情况
+      if (valid) {
+        if (identity.value === 'student') {
+          const res = await createStudent(studentInfo.value);
+          if(res.data){
+            ElMessage.success("创建成功")
+          }else {
+            ElMessage.error("未知错误")
+          }
+        } else if (identity.value === 'teacher') {
+          const res = await createTeacher(teacherInfo.value);
+          if(res.data){
+            ElMessage.success("创建成功")
+          }else {
+            ElMessage.error("未知错误")
+          }
         }
-      } else if (identity.value === 'teacher') {
-        const res = await createTeacher(teacherInfo.value);
-        if(res.data){
-          ElMessage.success("创建成功")
-        }else {
-          ElMessage.error("未知错误")
-        }
+      } else {
+        console.log('error submit!')
+        return false
       }
-    } else {
-      console.log('error submit!')
-      return false
-    }
-  })
+    })
+  }
 }
 onMounted(async () => {
   await getOptions();
