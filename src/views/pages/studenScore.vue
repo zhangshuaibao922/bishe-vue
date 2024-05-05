@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;height: 100%;display: flex">
-    <el-card style="height: 100%;width: 50%">
+    <el-card v-if="tableData.length!==1" style="height: 100%;width: 50%">
       <div ref="chartRef" style="width: 700px; height: 700px"></div>
     </el-card>
     <el-card shadow="never" style="width: 50%;height: 90%;">
