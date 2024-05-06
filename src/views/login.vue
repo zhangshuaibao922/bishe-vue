@@ -87,7 +87,7 @@ const ruleForm: loginData = reactive({
 const rules = {
   username: [
     {required: true, message: '请输入账号', trigger: 'blur'},
-    {min: 3, max: 20, message: '账号的长度在3-10之间', trigger: 'blur'},
+    {min: 10, max: 10, message: '账号的长度在10位', trigger: 'blur'},
   ],
   password: [
     {required: true, message: '请输入密码', trigger: 'blur'},

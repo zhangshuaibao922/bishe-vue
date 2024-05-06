@@ -37,7 +37,7 @@
                          size="small"
                          type="success"
                          @click="toSeeStudent(scope.row)"
-              >查看成绩
+              >查看每题成绩
               </el-button>
             </div>
           </template>

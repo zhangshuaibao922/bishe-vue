@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;height: 100%;">
     <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
-      <el-select v-model="collegeID" placeholder="Select" style="width: 200px" size="large" @change="selectByCollege">
+      <el-select v-model="collegeID" placeholder="选择学院" style="width: 200px" size="large" @change="selectByCollege">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
           <span style="float: left">{{ item.label }}</span>
           <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">

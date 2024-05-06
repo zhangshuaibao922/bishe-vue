@@ -2,7 +2,7 @@
   <div style="width: 100%;height: 100%;">
     <el-card style="margin-left: 100px;margin-right: 100px;height: 10%"  shadow="hover">
       <el-input v-model="input" style="width: 400px;margin-left: 20%"
-                placeholder="请输入教师姓名" size="large"/>
+                placeholder="请输入教师ID" size="large"/>
       <el-button type="primary" @click="selectTeacher" size="large" style="">查询教师
       </el-button>
     </el-card>
@@ -16,7 +16,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="教师名称">
+        <el-table-column label="名字">
           <template #default="scope">
             <el-text size="large">{{scope.row.teacherName}}</el-text>
           </template>

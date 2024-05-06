@@ -13,6 +13,9 @@
               <el-form-item label="个人简介">
                 <el-input v-model="form.description"></el-input>
               </el-form-item>
+              <el-form-item label="账号">
+                <el-input v-model="form.username"></el-input>
+              </el-form-item>
               <el-form-item label="旧密码">
                 <el-input v-model="form.oldPassword"></el-input>
               </el-form-item>

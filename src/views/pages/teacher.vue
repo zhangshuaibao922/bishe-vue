@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;height: 100%;">
     <el-card shadow="hover" style="margin-left: 100px;margin-right: 100px;height: 10%">
-      <el-select v-model="collegeID" placeholder="Select" style="width: 200px" size="large" @change="selectByCollege">
+      <el-select v-model="collegeID" placeholder="选择学院" style="width: 200px" size="large" @change="selectByCollege">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
           <span style="float: left">{{ item.label }}</span>
           <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
@@ -28,7 +28,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="教师名称">
+        <el-table-column label="姓名">
           <template #default="scope">
             <el-text size="large">{{ scope.row.teacherName }}</el-text>
           </template>
@@ -281,6 +281,7 @@ const selectByCollege = async ()=>{
         tableData.value[i].collegeName = collegeList.value[j].collegeName;
       }
     }
+    tableData.value[i].teacherPassword='';
   }
 }
 const addTeacherInfo = async () => {
@@ -359,6 +360,7 @@ const fetchData = async () => {
               tableData.value[i].collegeName = collegeList.value[j].collegeName;
             }
           }
+          tableData.value[i].teacherPassword='';
         }
       }
   ).catch((error) => {
