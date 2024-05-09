@@ -2,7 +2,7 @@
   <div class="login-box">
     <div class="demo-ruleForm">
       <h2>账号注册</h2>
-      <el-select v-model="identity" placeholder="选择身份" style="margin-left:60px;margin-bottom: 20px;width: 200px">
+      <el-select v-model="identity" placeholder="选择身份" style="margin-left:90px;margin-bottom: 20px;width: 230px">
         <el-option
             v-for="item in options"
             :key="item.value"
@@ -19,18 +19,18 @@
           label-width="90px"
       >
         <el-form-item label="学号：" prop="studentId">
-          <el-input v-model="studentInfo.studentId" autocomplete="off" style="width: 200px"/>
+          <el-input v-model="studentInfo.studentId" autocomplete="off" style="width: 300px"/>
         </el-form-item>
         <el-form-item label="姓名：" prop="studentName">
           <el-input
               v-model="studentInfo.studentName"
-              type="password"
+
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
         <el-form-item label="所属学院：" prop="idCardNo">
-          <el-select v-model="studentInfo.collegeId" placeholder="选择学院">
+          <el-select v-model="studentInfo.collegeId" placeholder="选择学院" style="width: 300px">
             <el-option v-for="item in optionsCollege" :key="item.value" :label="item.label" :value="item.value">
               <span style="float: left">{{ item.label }}</span>
               <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
@@ -44,7 +44,7 @@
               v-model="studentInfo.studentPassword"
               type="password"
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
         <el-form-item label="重复密码：" prop="password">
@@ -52,26 +52,38 @@
               v-model="password"
               type="password"
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
         <el-form-item label="身份证号：" prop="idCardNo">
           <el-input
               v-model="studentInfo.idCardNo"
-              type="password"
+
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
 
-        <el-form-item label="手机号：" prop="mobilePhone">
+        <el-form-item label="邮箱：" prop="studentEmail">
           <el-input
-              v-model="studentInfo.mobilePhone"
-              type="password"
+              v-model="studentInfo.studentEmail"
+
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
+        <el-form-item label="验证码：" prop="verificationCode">
+          <el-input placeholder="请输入验证码"
+                    v-model="studentInfo.code"
+
+                    autocomplete="off"
+                    style="width: 300px">
+            <template #append>
+              <el-button type="primary" @click="sendVerificationCode" >发送验证码</el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="submitForm(ruleFormRef)">
             注册
@@ -90,18 +102,18 @@
           label-width="90px"
       >
         <el-form-item label="教师ID：" prop="teacherId">
-          <el-input v-model="teacherInfo.teacherId" autocomplete="off" style="width: 200px"/>
+          <el-input v-model="teacherInfo.teacherId" autocomplete="off" style="width: 300px"/>
         </el-form-item>
         <el-form-item label="姓名：" prop="teacherName">
           <el-input
               v-model="teacherInfo.teacherName"
-              type="password"
+
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
         <el-form-item label="所属学院：" prop="idCardNo">
-          <el-select v-model="teacherInfo.collegeId" placeholder="选择学院" style="width: 200px">
+          <el-select v-model="teacherInfo.collegeId" placeholder="选择学院" style="width: 300px">
             <el-option v-for="item in optionsCollege" :key="item.value" :label="item.label" :value="item.value">
               <span style="float: left">{{ item.label }}</span>
               <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">
@@ -115,7 +127,7 @@
               v-model="teacherInfo.teacherPassword"
               type="password"
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
         <el-form-item label="重复密码：" prop="password">
@@ -123,24 +135,33 @@
               v-model="password"
               type="password"
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
         <el-form-item label="身份证号：" prop="idCardNo">
           <el-input
               v-model="teacherInfo.idCardNo"
-              type="password"
+
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
         </el-form-item>
-        <el-form-item label="手机号：" prop="mobilePhone">
+        <el-form-item label="邮箱：" prop="teacherEmail">
           <el-input
-              v-model="teacherInfo.mobilePhone"
-              type="password"
+              v-model="teacherInfo.teacherEmail"
               autocomplete="off"
-              style="width: 200px"
+              style="width: 300px"
           />
+        </el-form-item>
+        <el-form-item label="验证码：" prop="verificationCode">
+          <el-input placeholder="请输入验证码"
+                    v-model="teacherInfo.code"
+                    autocomplete="off"
+                    style="width: 300px">
+            <template #append>
+              <el-button type="primary" @click="sendVerificationCode" >发送验证码</el-button>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm(ruleFormRef)">
@@ -161,7 +182,7 @@ import {ref,onMounted} from "vue";
 import type {FormInstance, FormRules} from 'element-plus';
 import {useRouter} from "vue-router";
 import {ElMessage} from 'element-plus';
-import {createStudent,createTeacher} from "@/request/login/login"
+import {createStudent, createTeacher, verificationCode} from "@/request/login/login"
 import {query} from "@/request/school/query";
 
 interface TeacherInfo {
@@ -170,7 +191,8 @@ interface TeacherInfo {
   teacherName: string
   teacherPassword: string
   idCardNo: string
-  mobilePhone: string
+  teacherEmail: string
+  code: string
   authorityId: string
   status: string
   description: string
@@ -182,7 +204,8 @@ interface StudentInfo {
   studentPassword: string
   studentName: string
   idCardNo: string
-  mobilePhone: string
+  studentEmail: string
+  code: string
   gender: string
   status: string
   authorityId: string
@@ -215,7 +238,8 @@ const studentInfo=ref<StudentInfo>({
   studentPassword: '',
   studentName: '',
   idCardNo: '',
-  mobilePhone: '',
+  studentEmail: '',
+  code: '',
   gender: '1',
   status: '1',
   authorityId: '4',
@@ -227,7 +251,8 @@ const teacherInfo=ref<TeacherInfo>({
   teacherName: '',
   teacherPassword: '',
   idCardNo: '',
-  mobilePhone: '',
+  teacherEmail: '',
+  code: '',
   authorityId: '3',
   status: '1',
   description: '',
@@ -303,9 +328,28 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     })
   }
 }
+
+const sendVerificationCode=async ()=> {
+  if (identity.value === 'student') {
+    const res=await verificationCode(studentInfo.value.studentEmail)
+    if(res.data.data){
+      ElMessage.success("验证码已发送")
+    }else {
+      ElMessage.error("发送失败")
+    }
+  }else if (identity.value === 'teacher') {
+    const res=await verificationCode(teacherInfo.value.teacherEmail)
+    if(res.data.data){
+      ElMessage.success("验证码已发送")
+    }else {
+      ElMessage.error("发送失败")
+    }
+  }
+};
 onMounted(async () => {
   await getOptions();
 });
+
 </script>
 
 <style lang="scss" scoped>

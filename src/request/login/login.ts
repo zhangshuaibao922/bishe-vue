@@ -19,7 +19,8 @@ interface TeacherInfo {
     teacherName: string
     teacherPassword: string
     idCardNo: string
-    mobilePhone: string
+    teacherEmail: string
+    code: string
     authorityId: string
     status: string
     description: string
@@ -31,7 +32,8 @@ interface StudentInfo {
     studentPassword: string
     studentName: string
     idCardNo: string
-    mobilePhone: string
+    studentEmail: string
+    code: string
     gender: string
     status: string
     authorityId: string
@@ -67,6 +69,13 @@ export function createTeacher(data: TeacherInfo){
         url:'/teacher',
         method:'post',
         data
+    })
+}
+
+export function verificationCode(email: string){
+    return service({
+        url:'/login/verificationCode/'+email,
+        method:'get',
     })
 }
 
