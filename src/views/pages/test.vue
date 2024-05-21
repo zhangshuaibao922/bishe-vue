@@ -8,7 +8,7 @@
       <el-button round size="large" style="margin-left: 100px" type="success" @click="addTest">新增测试
       </el-button>
     </el-card>
-    <el-card shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
+    <el-card  shadow="never" style="margin-left: 100px;margin-right: 100px;height: 90%;">
       <el-table
           :data="tableData"
           border
@@ -66,9 +66,9 @@
               </el-button>
               <el-button v-if="scope.row.paperClassId!==''"
                          size="small"
-                         type="warning"
+                         type=""
                          @click="toChangeStatus(scope.row)"
-              >结束批阅
+              >开始批阅
               </el-button>
               <el-button
                   size="small"
@@ -321,10 +321,10 @@ const toChangeSettingDescription= async (data:Exam)=>{
   console.log(desList.value)
 }
 const toChangeStatus= async (data:Exam)=>{
-  data.isDelete=1
+  data.isDelete=2
   const res=await updateExam(data);
   if(res.data){
-    ElMessage.success("该考试已截止")
+    ElMessage.success("该考试开始批改")
     await getTest();
   }
 }

@@ -35,6 +35,12 @@
                 @click="toSetScore(scope.row)"
             >题目列表
             </el-button>
+              <el-button v-if="scope.row.isDelete!==1"
+                         size="small"
+                         type="danger"
+                         @click="toChangeStatus(scope.row)"
+              >结束批阅
+              </el-button>
             </div>
           </template>
         </el-table-column>
@@ -76,7 +82,14 @@ const toSelectExam = async () => {
   console.log(examClass.value);
   await getTest();
 }
-
+const toChangeStatus= async (data:Exam)=>{
+  data.isDelete=1
+  const res=await updateExam(data);
+  if(res.data){
+    ElMessage.success("该考试已截止")
+    await getTest();
+  }
+}
 // 模拟后端返回的数据
 const getTest = () => {
   scoreQueryByExamClass(examClass.value).then((res) => {

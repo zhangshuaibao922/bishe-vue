@@ -51,13 +51,13 @@
               >模版设置
               </el-button>
               <el-button
-                  v-else
+                  v-if="scope.row.paperClassId!==''&&scope.row.isDelete!==2"
                   size="small"
                   type="primary"
                   @click="toAnswer(scope.row)"
               >录入答题卡
               </el-button>
-              <el-button v-if="scope.row.paperClassId!==''"
+              <el-button v-if="scope.row.paperClassId!==''&&scope.row.isDelete!==2"
                          size="small"
                          type="info"
                          @click="toChangeSettingDescription(scope.row)"
@@ -65,9 +65,9 @@
               </el-button>
               <el-button v-if="scope.row.paperClassId!==''"
                          size="small"
-                         type="warning"
+                         type=""
                          @click="toChangeStatus(scope.row)"
-              >结束批阅
+              >开始批阅
               </el-button>
               <el-button
                   size="small"
@@ -355,10 +355,10 @@ const toChangeSettingDescription= async (data:Exam)=>{
   console.log(desList.value)
 }
 const toChangeStatus= async (data:Exam)=>{
-  data.isDelete=1
+  data.isDelete=2
   const res=await updateExam(data);
   if(res.data){
-    ElMessage.success("该考试已截止")
+    ElMessage.success("该考试开始批改")
     await getTest();
   }
 }
