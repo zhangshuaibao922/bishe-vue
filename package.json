@@ -20,7 +20,8 @@
     "tui-image-editor": "^3.15.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",

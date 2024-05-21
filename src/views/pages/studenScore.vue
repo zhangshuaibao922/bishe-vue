@@ -6,6 +6,9 @@
     <el-card shadow="never" style="width: 50%;height: 90%;">
       <el-button size="large" style="margin-bottom: 10px" type="primary" @click="doBack">返回列表
       </el-button>
+
+      <el-button v-if="tableData.length!==1" size="large" style="margin-bottom: 10px;margin-left: 500px" type="success" @click="doExcel">下载成绩
+      </el-button>
       <el-table
           :data="tableData"
           :row-class-name="tableRowClassName"
@@ -47,10 +50,12 @@
   </div>
 </template>
 <script lang="ts" setup>
+
 import {onMounted, reactive, ref} from 'vue';
 import {useStudentStore} from '@/stores/counter'
 import router from "@/router";
 import * as echarts from 'echarts';
+import * as XLSX from 'xlsx';
 
 import {getPaperClassId} from "@/request/student/student";
 
@@ -84,6 +89,27 @@ interface StudentScoreDto {
   studentName: string,
   examId: string,
   totalScore: number,
+}
+const doExcel=()=>{
+  const prez = tableData.filter(row => row);
+  const rows = prez.map(row => ({
+    id:row.studentId,
+    name: row.studentName,
+    score: row.totalScore,
+  }));
+  console.log(rows)
+  // 1. 创建一个工作簿 workbook
+  const workBook = XLSX.utils.book_new()
+  // 2. 创建工作表 worksheet
+  const workSheet = XLSX.utils.json_to_sheet(rows)
+  // 3. 将工作表放入工作簿中
+  XLSX.utils.book_append_sheet(workBook, workSheet)
+
+  /* fix headers */
+  XLSX.utils.sheet_add_aoa(workSheet, [["学号", "姓名","分数"]], { origin: "A1" });
+  workSheet["!cols"] = [ { wch: 10 } ,{ wch: 10 } ];
+  // 4. 生成数据保存
+  XLSX.writeFile(workBook, "成绩.xlsx", { compression: true });
 }
 const studentStore = useStudentStore();
 const tableData = studentStore.studentScoreList;
