@@ -22,8 +22,8 @@
         </el-table-column>
         <el-table-column label="得分" width="100px">
           <template #default="scope">
-            <el-text v-if="scope.row.avgScore!==0" type="primary" size="large">{{scope.row.avgScore}}</el-text>
-            <el-text v-else type="danger" size="large">{{scope.row.avgScore}}</el-text>
+            <el-text v-if="scope.row.avgScore!==0&&scope.row.avgScore!=='NaN'" type="primary" size="large">{{scope.row.avgScore}}</el-text>
+            <el-text v-if="scope.row.avgScore==='NaN'" type="danger" size="large">0</el-text>
           </template>
         </el-table-column>
       </el-table>
