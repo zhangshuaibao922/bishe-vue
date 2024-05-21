@@ -36,8 +36,8 @@
         <el-table-column label="考试日期" prop="examData"/>
         <el-table-column label="考试状态">
           <template #default="scope">
-            <el-text v-if="scope.row.isDelete!==1" type="primary" size="large">正常</el-text>
-            <el-text v-else type="danger" size="large">结束</el-text>
+            <el-text v-if="scope.row.paperClassId!==''" type="primary" size="large">正在录入</el-text>
+            <el-text v-else type="danger" size="large">初始化</el-text>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="360px">

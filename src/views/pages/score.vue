@@ -22,7 +22,7 @@
         <el-table-column label="考试日期" prop="examData"/>
         <el-table-column label="考试状态">
           <template #default="scope">
-            <el-text v-if="scope.row.isDelete!==1" type="primary" size="large">正常</el-text>
+            <el-text v-if="scope.row.isDelete!==1" type="primary" size="large">正在批阅</el-text>
             <el-text v-else type="danger" size="large">结束</el-text>
           </template>
         </el-table-column>
