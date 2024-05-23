@@ -332,6 +332,7 @@ const changeStudent = async (data: Student) => {
   }
 }
 const selectStudent = async () => {
+  collegeID.value=''
   if (input.value === '') {
     ElMessage.success("查询成功")
     await fetchData();

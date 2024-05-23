@@ -57,12 +57,15 @@ const doBack = () => {
   router.push("score");
 }
 // 模拟后端返回的数据
-const getTest = () => {
+const getTest = async () => {
   queryByTeacherIdAndExamSet(localStorage.getItem("id"), localStorage.getItem("examId")).then((res) => {
     tableData.value = res.data.data;
     console.log(tableData.value);
     if(res.data.message==='存在异常得分情况，请重新批阅'){
       ElMessage.error(res.data.message)
+      queryByTeacherIdAndExamSet(localStorage.getItem("id"), localStorage.getItem("examId")).then((res)=>{
+        tableData.value = res.data.data;
+      })
     }else {
       if (res.status === 200) {
         ElMessage.success("查询成功")

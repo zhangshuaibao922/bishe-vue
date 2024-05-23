@@ -22,7 +22,7 @@
         <el-table-column label="考试日期" prop="examData"/>
         <el-table-column label="考试状态">
           <template #default="scope">
-            <el-text v-if="scope.row.isDelete!==1" size="large" type="primary">正常</el-text>
+            <el-text v-if="scope.row.isDelete!==1" size="large" type="primary">归档</el-text>
             <el-text v-else size="large" type="danger">批阅完成</el-text>
           </template>
         </el-table-column>
@@ -35,6 +35,12 @@
                          @click="toSetScore(scope.row)"
               >查看成绩
               </el-button>
+              <el-button v-if="scope.row.isDelete===1"
+                         size="small"
+                         type="primary"
+                         @click="changeScore(scope.row)"
+              >成绩归档
+              </el-button>
             </div>
           </template>
         </el-table-column>
@@ -46,7 +52,7 @@
 import {ref, onMounted} from 'vue';
 import {useStudentStore} from '@/stores/counter'
 import {ElMessage} from "element-plus";
-import {querySeeScore, queryAllScore} from "@/request/score/score"
+import {querySeeScore, queryAllScore, updateExam} from "@/request/score/score"
 import router from "@/router";
 
 interface StudentScoreDto {
@@ -80,6 +86,15 @@ const examClass = ref('1')
 const tableData = ref<Exam[]>([]);
 const studentStore = useStudentStore();
 const studentId = ref('');
+
+const changeScore=async (data: Exam) => {
+  data.isDelete=3
+  const res=await updateExam(data);
+  if(res.data){
+    ElMessage.success("该考试已归档")
+    await getTest();
+  }
+}
 
 const toSetScore = async (data: Exam) => {
   studentId.value = '1';

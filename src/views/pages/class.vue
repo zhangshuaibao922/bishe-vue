@@ -342,6 +342,7 @@ const addTeacherToClass=async (teacherId:string)=>{
   }
 }
 const selectLesson=async ()=>{
+  collegeID.value=''
   if(input.value==null||input.value.length==0){
     await fetchData();
   }else {
