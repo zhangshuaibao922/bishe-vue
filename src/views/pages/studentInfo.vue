@@ -174,8 +174,8 @@
           <el-form-item label="身份证号">
             <el-input v-model="insertData.idCardNo"></el-input>
           </el-form-item>
-          <el-form-item label="手机号">
-            <el-input v-model="insertData.mobilePhone"></el-input>
+          <el-form-item label="邮箱">
+            <el-input v-model="insertData.studentEmail"></el-input>
           </el-form-item>
           <el-form-item label="个人简介">
             <el-input v-model="insertData.description"></el-input>
@@ -211,7 +211,7 @@ interface Student {
   studentPassword: string
   studentName: string
   idCardNo: string
-  mobilePhone: string
+  studentEmail: string
   gender: string
   status: string
   authorityId: string
@@ -224,7 +224,7 @@ interface StudentInfo {
   studentPassword: string
   studentName: string
   idCardNo: string
-  mobilePhone: string
+  studentEmail: string
   gender: string
   status: string
   authorityId: string
@@ -263,7 +263,7 @@ const insertData = ref<StudentInfo>({
   studentPassword: '',
   studentName: '',
   idCardNo: '',
-  mobilePhone: '',
+  studentEmail: '',
   gender: '1',
   status: '1',
   authorityId: '4',
@@ -307,7 +307,7 @@ const addStudentInfo = async () => {
   insertData.value.studentName = ''
   insertData.value.studentPassword = ''
   insertData.value.idCardNo = ''
-  insertData.value.mobilePhone = ''
+  insertData.value.studentEmail = ''
   insertData.value.description = ''
   insertData.value.collegeId = ''
   await fetchData();

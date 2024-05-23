@@ -17,7 +17,7 @@ interface StudentInfo {
     studentPassword: string
     studentName: string
     idCardNo: string
-    mobilePhone: string
+    studentEmail: string
     gender: string
     status: string
     authorityId: string
@@ -30,7 +30,7 @@ interface Student {
     studentPassword: string
     studentName: string
     idCardNo: string
-    mobilePhone: string
+    studentEmail: string
     gender: string
     status: string
     authorityId: string
@@ -98,7 +98,7 @@ export function getAll(){
 
 export function add(data: StudentInfo){
     return service({
-        url:'/student',
+        url:'/student/insert',
         method:'post',
         data,
     })

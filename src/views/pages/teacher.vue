@@ -163,8 +163,8 @@
           <el-form-item label="身份证号">
             <el-input v-model="insertData.idCardNo"></el-input>
           </el-form-item>
-          <el-form-item label="手机号">
-            <el-input v-model="insertData.mobilePhone"></el-input>
+          <el-form-item label="邮箱">
+            <el-input v-model="insertData.teacherEmail"></el-input>
           </el-form-item>
           <el-form-item label="个人简介">
             <el-input v-model="insertData.description"></el-input>
@@ -203,7 +203,7 @@ interface Teacher {
   teacherName: string
   teacherPassword: string
   idCardNo: string
-  mobilePhone: string
+  teacherEmail: string
   authorityId: string
   status: string
   description: string
@@ -215,7 +215,7 @@ interface TeacherInfo {
   teacherName: string
   teacherPassword: string
   idCardNo: string
-  mobilePhone: string
+  teacherEmail: string
   authorityId: string
   status: string
   description: string
@@ -253,7 +253,7 @@ const insertData = ref<TeacherInfo>({
   teacherName: '',
   teacherPassword: '',
   idCardNo: '',
-  mobilePhone: '',
+  teacherEmail: '',
   authorityId: '3',
   status: '',
   description: '',
@@ -297,7 +297,7 @@ const addTeacherInfo = async () => {
   insertData.value.teacherName = ''
   insertData.value.teacherPassword = ''
   insertData.value.idCardNo = ''
-  insertData.value.mobilePhone = ''
+  insertData.value.teacherEmail = ''
   insertData.value.description = ''
   insertData.value.collegeId = ''
   await fetchData();

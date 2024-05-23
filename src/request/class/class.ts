@@ -20,7 +20,7 @@ interface Teacher {
     teacherName: string
     teacherPassword: string
     idCardNo: string
-    mobilePhone: string
+    teacherEmail: string
     authorityId: string
     status: string
     description: string
@@ -31,7 +31,7 @@ interface TeacherInfo {
     teacherName: string
     teacherPassword: string
     idCardNo: string
-    mobilePhone: string
+    teacherEmail: string
     authorityId: string
     status: string
     description: string
@@ -68,7 +68,7 @@ export function deleteByIdTeacher(id:string){
 
 export function insertTeacherInfo(data:TeacherInfo){
     return service({
-        url:'/teacher',
+        url:'/teacher/insert',
         method:'post',
         data,
     })

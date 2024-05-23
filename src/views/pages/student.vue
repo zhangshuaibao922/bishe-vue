@@ -216,7 +216,6 @@ const addStudentToClass = async (studentId: string) => {
   })
   if (res.data) {
     ElMessage.success("添加成功");
-    centerDialogVisible1.value = false;
     await fetchData();
   } else {
     ElMessage.error("已添加，无需重复");
